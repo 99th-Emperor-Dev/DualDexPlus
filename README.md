@@ -8,9 +8,9 @@ It's a fork of [DualScreenDex](https://github.com/enrique-paulino/DualScreenDex)
 
 ## Demo
 
-<video src="docs/DualDexPlus_showcase.mp4" controls muted width="700"></video>
+[![DualDex Plus demo on YouTube](https://img.youtube.com/vi/TUgP3m9KfhI/maxresdefault.jpg)](https://youtu.be/TUgP3m9KfhI)
 
-Recorded on a real AYN Thor bottom screen. If the player doesn't show, [download the video](docs/DualDexPlus_showcase.mp4).
+Recorded on a real AYN Thor. Click the picture to watch it on YouTube.
 
 ---
 
