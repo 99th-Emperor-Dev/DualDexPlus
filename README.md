@@ -44,6 +44,7 @@ All taken on the bottom screen of a real AYN Thor.
 
 ### Built for the bottom screen
 * **Opens on the second screen by itself.** If it's launched on the main screen of a dual-screen device, it moves to the other one so it never covers your game.
+* **Swap screens** for devices whose main screen is the bottom one: Settings → **App Screen: MAIN** keeps the app on the main display, and **Scan Screen** picks which screen the game is read from.
 * **Full screen,** with no status bar or navigation bar (swipe from an edge to show them briefly).
 * **Wide layout for landscape bottom screens** (Thor, Retroid Pocket Duo, RG DS):
   * the PokÃ©mon card and its data side by side;

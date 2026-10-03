@@ -801,18 +801,24 @@ class MainActivity : AppCompatActivity() {
 
     /**
      * Dual-screen handhelds (Thor, RP Duo...): the game runs on the main screen, so if we were opened there
-     * (Android Studio, the top launcher) reopen on the second screen. Returns true when moving.
+     * (Android Studio, the top launcher) reopen on the second screen. Devices whose main display is the
+     * physical bottom screen pick "App Screen: MAIN" in settings and we move the other way.
+     * Returns true when moving.
      */
     private fun moveToSecondScreen(): Boolean {
         if (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.R) return false
-        if (display?.displayId != android.view.Display.DEFAULT_DISPLAY) return false
-        val dm = getSystemService(android.hardware.display.DisplayManager::class.java) ?: return false
-        val other = dm.displays.firstOrNull {
-            it.displayId != android.view.Display.DEFAULT_DISPLAY && it.state == android.view.Display.STATE_ON &&
-                (it.flags and android.view.Display.FLAG_PRIVATE) == 0
-        } ?: return false
+        val wantMain = getSharedPreferences("DualDexPrefs", MODE_PRIVATE).getString("APP_SCREEN", "second") == "main"
+        val onMain = display?.displayId == android.view.Display.DEFAULT_DISPLAY
+        if (wantMain == onMain) return false
+        val target = if (wantMain) android.view.Display.DEFAULT_DISPLAY else {
+            val dm = getSystemService(android.hardware.display.DisplayManager::class.java) ?: return false
+            dm.displays.firstOrNull {
+                it.displayId != android.view.Display.DEFAULT_DISPLAY && it.state == android.view.Display.STATE_ON &&
+                    (it.flags and android.view.Display.FLAG_PRIVATE) == 0
+            }?.displayId ?: return false
+        }
         return try {
-            val opts = android.app.ActivityOptions.makeBasic().setLaunchDisplayId(other.displayId)
+            val opts = android.app.ActivityOptions.makeBasic().setLaunchDisplayId(target)
             startActivity(Intent(this, MainActivity::class.java).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_MULTIPLE_TASK), opts.toBundle())
             finish()
             true
@@ -1560,6 +1566,8 @@ class MainActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
+        // "App Screen" may have just changed in settings
+        if (moveToSecondScreen()) return
         loadSettings()
         // a new game means a new dex list: run the search again so the list matches the text in the box
         etSearch.text?.toString()?.takeIf { it.isNotEmpty() }?.let { etSearch.setText(it); etSearch.setSelection(it.length) }

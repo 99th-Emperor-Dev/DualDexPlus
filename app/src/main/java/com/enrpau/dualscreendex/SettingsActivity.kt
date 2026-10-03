@@ -363,6 +363,13 @@ class SettingsActivity : AppCompatActivity() {
     // ---------- scanner ----------
 
     private fun setupScannerClicks() {
+        // which screen the app lives on: the second one (default), or the main one for devices
+        // whose "main" display is physically the bottom screen
+        findViewById<MaterialButton>(R.id.btnAppScreen).setOnClickListener {
+            val next = if (prefs.getString("APP_SCREEN", "second") == "second") "main" else "second"
+            prefs.edit { putString("APP_SCREEN", next) }
+            refreshScannerUI()
+        }
         btnScanSource.setOnClickListener {
             val newMode = if (prefs.getString("SCAN_SOURCE", "top") == "top") "bottom" else "top"
             prefs.edit { putString("SCAN_SOURCE", newMode) }
@@ -381,6 +388,7 @@ class SettingsActivity : AppCompatActivity() {
     }
 
     private fun refreshScannerUI() {
+        findViewById<MaterialButton>(R.id.btnAppScreen).text = "App Screen: ${prefs.getString("APP_SCREEN", "second")?.uppercase()}"
         btnScanSource.text = "Scan Screen: ${prefs.getString("SCAN_SOURCE", "top")?.uppercase()}"
         btnScanAlign.text = "Pokemon Aligned: ${prefs.getString("SCAN_ALIGN", "left")?.uppercase()}"
         findViewById<MaterialButton>(R.id.btnScanLanguage).text =
@@ -436,7 +444,7 @@ class SettingsActivity : AppCompatActivity() {
             btn.letterSpacing = 0f
             btn.setRippleColor(android.content.res.ColorStateList.valueOf("#20000000".toColorInt()))
         }
-        listOf(btnScanSource, btnScanAlign, findViewById(R.id.btnScanLanguage), findViewById<MaterialButton>(R.id.btnCreateProfile)).forEach { styleButton(it) }
+        listOf(findViewById<MaterialButton>(R.id.btnAppScreen), btnScanSource, btnScanAlign, findViewById(R.id.btnScanLanguage), findViewById<MaterialButton>(R.id.btnCreateProfile)).forEach { styleButton(it) }
 
         ThemeManager.applyFont(root)
         applyLcd()

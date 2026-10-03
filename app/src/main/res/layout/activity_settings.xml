@@ -289,6 +289,15 @@
                 android:layout_marginBottom="8dp"/>
 
             <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnAppScreen"
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:text="App Screen: SECOND"
+                android:textSize="16sp"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                android:layout_marginBottom="8dp"/>
+
+            <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnScanSource"
                 android:layout_width="match_parent"
                 android:layout_height="60dp"
