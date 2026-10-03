@@ -1,6 +1,6 @@
-# DualDex Plus
+﻿# DualDex Plus
 
-**DualDex Plus** is a companion Pokédex for dual-screen Android handhelds such as the **AYN Thor**. While you play on the top screen, it reads the Pokémon you're facing and shows its types, weaknesses, resistances, base stats, and how your team matches up against it on the bottom screen.
+**DualDex Plus** is a companion PokÃ©dex for dual-screen Android handhelds such as the **AYN Thor**. While you play on the top screen, it reads the PokÃ©mon you're facing and shows its types, weaknesses, resistances, base stats, and how your team matches up against it on the bottom screen.
 
 It's a fork of [DualScreenDex](https://github.com/enrique-paulino/DualScreenDex) by Enrique Paulino. **v1.0** is the first release of the fork. It installs as its own app (`io.github.dualdexplus`), so it can sit next to the original.
 
@@ -8,7 +8,7 @@ It's a fork of [DualScreenDex](https://github.com/enrique-paulino/DualScreenDex)
 
 ## Demo
 
-[![DualDex Plus demo on YouTube](https://img.youtube.com/vi/TUgP3m9KfhI/maxresdefault.jpg)](https://youtu.be/TUgP3m9KfhI)
+[![DualDex Plus demo on YouTube](https://img.youtube.com/vi/TUgP3m9KfhI/hqdefault.jpg)](https://youtu.be/TUgP3m9KfhI)
 
 Recorded on a real AYN Thor. Click the picture to watch it on YouTube.
 
@@ -18,16 +18,16 @@ Recorded on a real AYN Thor. Click the picture to watch it on YouTube.
 
 All taken on the bottom screen of a real AYN Thor.
 
-| FireRed · scanned from the battle on the top screen | FireRed · browsing with the battle tab |
+| FireRed Â· scanned from the battle on the top screen | FireRed Â· browsing with the battle tab |
 |:---:|:---:|
 | ![FireRed scan](docs/screenshots/firered_scan_mewtwo.png) | ![FireRed](docs/screenshots/firered_raichu_scan.png) |
 | **Crystal** | **Emerald** |
 | ![Crystal](docs/screenshots/crystal_typhlosion.png) | ![Emerald](docs/screenshots/emerald_zigzagoon.png) |
-| **Violet** | **National Dex · regional forms** |
+| **Violet** | **National Dex Â· regional forms** |
 | ![Violet](docs/screenshots/violet_floragato.png) | ![Alolan Vulpix](docs/screenshots/national_alolan_vulpix.png) |
-| **Team builder (Legends: Arceus)** | **Pokédex list (FireRed)** |
+| **Team builder (Legends: Arceus)** | **PokÃ©dex list (FireRed)** |
 | ![Team builder](docs/screenshots/team_builder_arceus.png) | ![List](docs/screenshots/firered_list.png) |
-| **Settings · FireRed or LeafGreen** | **Settings · Gen 1 versions and palettes** |
+| **Settings Â· FireRed or LeafGreen** | **Settings Â· Gen 1 versions and palettes** |
 | ![Versions](docs/screenshots/settings_versions.png) | ![Gen 1 palettes](docs/screenshots/settings_gen1_palettes.png) |
 
 ### Gen 1 screen palettes
@@ -46,16 +46,16 @@ All taken on the bottom screen of a real AYN Thor.
 * **Opens on the second screen by itself.** If it's launched on the main screen of a dual-screen device, it moves to the other one so it never covers your game.
 * **Full screen,** with no status bar or navigation bar (swipe from an edge to show them briefly).
 * **Wide layout for landscape bottom screens** (Thor, Retroid Pocket Duo, RG DS):
-  * the Pokémon card and its data side by side;
+  * the PokÃ©mon card and its data side by side;
   * "Your team vs this" across the bottom.
-  * Everything fits on one screen with no scrolling. The sprite grows or shrinks to fill the card, and the badges and stats adjust to how many weaknesses a Pokémon has.
+  * Everything fits on one screen with no scrolling. The sprite grows or shrinks to fill the card, and the badges and stats adjust to how many weaknesses a PokÃ©mon has.
 * **Gestures, no floating buttons:**
-  * swipe left and right to go through the Pokédex, even after a search or a scan;
+  * swipe left and right to go through the PokÃ©dex, even after a search or a scan;
   * swipe down to close a card or the team builder;
-  * when a Pokémon is detected, its name appears as a single button to jump to it.
+  * when a PokÃ©mon is detected, its name appears as a single button to jump to it.
 
 ### Games
-* **Pick the game you're playing** in Settings → Games:
+* **Pick the game you're playing** in Settings â†’ Games:
   * Red / Blue / Yellow
   * Gold / Silver / Crystal
   * Ruby / Sapphire / Emerald
@@ -68,13 +68,13 @@ All taken on the bottom screen of a real AYN Thor.
   * Legends: Z-A
   * the latest games (National Dex)
 * **Exact version:** Gold vs Silver vs Crystal, Sword vs Shield and so on. The version changes the colours and the sprites.
-* **Each game's own Pokédex order and numbers,** for example Hisui #001 Rowlet or Johto #001 Chikorita, including DLC dexes. You can limit the list to Pokémon in that game, or show all 1025.
+* **Each game's own PokÃ©dex order and numbers,** for example Hisui #001 Rowlet or Johto #001 Chikorita, including DLC dexes. You can limit the list to PokÃ©mon in that game, or show all 1025.
 * **Match dex to game:** the type chart, dex, forms and sprites all follow the selected game.
 * **Megas, Primals and regional forms** with their own types and stats, only in games where they exist.
 * **Partner Pikachu and Partner Eevee** in Let's Go, with their own stats.
 
 ### Looks
-* **Themes that look like the games:** Game Boy text boxes, GBA panels, Switch-era menus. Gen 1 and Gen 2 use real 8×8 pixel text.
+* **Themes that look like the games:** Game Boy text boxes, GBA panels, Switch-era menus. Gen 1 and Gen 2 use real 8Ã—8 pixel text.
 * **Hardware-accurate palettes:**
   * Gen 1 stays within 4 colours, with a choice of Game Boy, Pocket, Light, Game Boy Color (per version) and Super Game Boy palettes.
   * Gen 2 stays within the Game Boy Color's 56 colours.
@@ -91,7 +91,7 @@ All taken on the bottom screen of a real AYN Thor.
 * **Team analysis:** shared weaknesses, and types your team can't hit super-effectively.
 
 ### Scanning
-* **Opens the card by itself** when a Pokémon is found. If you close it to browse, it stays closed until that battle ends, and the Pokémon's name button takes you back.
+* **Opens the card by itself** when a PokÃ©mon is found. If you close it to browse, it stays closed until that battle ends, and the PokÃ©mon's name button takes you back.
 * Works with the GBA fonts. Look-alike letters in FireRed / LeafGreen (M/W/N/H, O/D) and gender symbols stuck to the name are matched correctly.
 * **Game Language: English / Japanese.** Japanese uses ML Kit's on-device Japanese model and matches katakana names. Based on [upstream PR #4](https://github.com/enrique-paulino/DualScreenDex/pull/4).
 * From the original app:
@@ -105,7 +105,7 @@ All taken on the bottom screen of a real AYN Thor.
 1. Download the APK from the [Releases](../../releases) page and install it.
 2. Turn on **DualDex Plus** in Android's **Accessibility** settings (the app shows a banner that takes you there).
    * This permission is only used to read the game screen for on-device text recognition. No images are saved or sent anywhere, and the app has no internet permission.
-3. Open Settings → Games and pick the game you're playing.
+3. Open Settings â†’ Games and pick the game you're playing.
 
 ---
 
@@ -122,10 +122,10 @@ This fork was built with **[Claude Code](https://claude.com/claude-code)**, Anth
 
 * Original app: [DualScreenDex](https://github.com/enrique-paulino/DualScreenDex) by Enrique Paulino (MIT).
 * Japanese OCR: [upstream PR #4](https://github.com/enrique-paulino/DualScreenDex/pull/4).
-* Pokédex data, base stats, game dexes and 3D renders: [pokemondb.net](https://pokemondb.net).
-* Animated 3D models, Black/White-style 2D sprites and their animations: the community sprite collection hosted by [Pokémon Showdown](https://play.pokemonshowdown.com/sprites/).
+* PokÃ©dex data, base stats, game dexes and 3D renders: [pokemondb.net](https://pokemondb.net).
+* Animated 3D models, Black/White-style 2D sprites and their animations: the community sprite collection hosted by [PokÃ©mon Showdown](https://play.pokemonshowdown.com/sprites/).
 * Super Game Boy palette values: the [pret/pokered](https://github.com/pret/pokered) disassembly.
-* Classic game sprites (Gen 1–5) and box icons: community sprite packs.
+* Classic game sprites (Gen 1â€“5) and box icons: community sprite packs.
 * Pixel font: [Press Start 2P](https://fonts.google.com/specimen/Press+Start+2P) by CodeMan38, SIL Open Font License (see `app/src/main/assets/licenses/`).
 
 ## Tech stack
@@ -138,4 +138,4 @@ This fork was built with **[Claude Code](https://claude.com/claude-code)**, Anth
 
 MIT, see [LICENSE](LICENSE).
 
-*DualDex Plus is an unofficial, free fan project. It is not affiliated with, endorsed or supported by Nintendo, Game Freak, Creatures or The Pokémon Company. Pokémon names, sprites and related media are trademarks and copyrights of their respective owners.*
+*DualDex Plus is an unofficial, free fan project. It is not affiliated with, endorsed or supported by Nintendo, Game Freak, Creatures or The PokÃ©mon Company. PokÃ©mon names, sprites and related media are trademarks and copyrights of their respective owners.*
