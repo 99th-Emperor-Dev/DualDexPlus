@@ -13,12 +13,18 @@ import android.view.accessibility.AccessibilityEvent
 import com.enrpau.dualscreendex.data.RomManager
 import com.google.mlkit.vision.common.InputImage
 import com.google.mlkit.vision.text.TextRecognition
+import com.google.mlkit.vision.text.japanese.JapaneseTextRecognizerOptions
 import com.google.mlkit.vision.text.latin.TextRecognizerOptions
 import java.util.concurrent.Executors
 
 class DualDexAccessibilityService : AccessibilityService() {
 
-    private val recognizer = TextRecognition.getClient(TextRecognizerOptions.DEFAULT_OPTIONS)
+    // english uses the original latin model; japanese games use ML Kit's japanese model (reads kana + latin)
+    private val latinRecognizer by lazy { TextRecognition.getClient(TextRecognizerOptions.DEFAULT_OPTIONS) }
+    private val japaneseRecognizer by lazy { TextRecognition.getClient(JapaneseTextRecognizerOptions.Builder().build()) }
+
+    private fun isJapanese() =
+        getSharedPreferences("DualDexPrefs", MODE_PRIVATE).getString("SCAN_LANGUAGE", "en") == "ja"
     private val executor = Executors.newSingleThreadExecutor()
     private val handler = Handler(Looper.getMainLooper())
 
@@ -131,7 +137,7 @@ class DualDexAccessibilityService : AccessibilityService() {
             val croppedBitmap = Bitmap.createBitmap(bitmap, startX, startY, cropWidth, cropHeight)
             val image = InputImage.fromBitmap(croppedBitmap, 0)
 
-            recognizer.process(image)
+            (if (isJapanese()) japaneseRecognizer else latinRecognizer).process(image)
                 .addOnSuccessListener { visionText ->
                     processOcrResult(visionText.text)
                     isScanning = false
@@ -145,8 +151,22 @@ class DualDexAccessibilityService : AccessibilityService() {
     }
 
     private fun processOcrResult(rawText: String) {
-        val cleanText = rawText.replace("\n", " ").replace(Regex("[^A-Za-z -]"), "")
-        val words = cleanText.split(" ").filter { it.length > 3 }
+        val words = if (isJapanese()) {
+            // keep kana / kanji, drop numbers and symbols, and skip UI labels like HP, Lv, No.
+            rawText.replace("\n", " ")
+                .replace(Regex("[^A-Za-z\\u3040-\\u30FF\\u4E00-\\u9FFF\\- ]"), " ")
+                .replace(Regex("\\bNo\\b", RegexOption.IGNORE_CASE), " ")
+                .split(Regex("\\s+"))
+                .filter { w ->
+                    val jp = w.any { isJapaneseChar(it) }
+                    (if (jp) w.length >= 2 else w.length > 3) &&
+                        !w.equals("HP", true) && !w.equals("Lv", true)
+                }
+        } else {
+            // english: unchanged
+            val cleanText = rawText.replace("\n", " ").replace(Regex("[^A-Za-z -]"), "")
+            cleanText.split(" ").filter { it.length > 3 }
+        }
 
         val foundNames = ArrayList<String>()
         val foundIds = ArrayList<Int>()
@@ -185,26 +205,73 @@ class DualDexAccessibilityService : AccessibilityService() {
         sendBroadcast(intent)
     }
 
+    private fun isJapaneseChar(ch: Char) = ch in '\u3040'..'\u30FF' || ch in '\u4E00'..'\u9FFF'
+
+    // small kana read as their full-size forms (small i -> i, small tsu -> tsu) so OCR slips still match.
+    // written as escapes: ァ->ア ィ->イ ゥ->ウ ェ->エ ォ->オ ャ->ヤ ュ->ユ ョ->ヨ ッ->ツ
+    private val smallKana = mapOf(
+        'ァ' to 'ア', 'ィ' to 'イ', 'ゥ' to 'ウ', 'ェ' to 'エ', 'ォ' to 'オ',
+        'ャ' to 'ヤ', 'ュ' to 'ユ', 'ョ' to 'ヨ', 'ッ' to 'ツ'
+    )
+
+    private fun normalizeKana(input: String): String = String(CharArray(input.length) { smallKana[input[it]] ?: input[it] })
+
+    /** Japanese names: exact katakana first, then a close match (at most 1 character off). */
+    private fun findJapaneseMatch(input: String): Pokemon? {
+        val norm = normalizeKana(input)
+        pokemonList.find { it.japaneseKana != null && normalizeKana(it.japaneseKana) == norm }?.let { return it }
+        var best: Pokemon? = null
+        var bestDist = Int.MAX_VALUE
+        for (p in pokemonList) {
+            val kana = p.japaneseKana ?: continue
+            if (kotlin.math.abs(kana.length - input.length) > 2) continue
+            val dist = levenshtein(norm, normalizeKana(kana))
+            if (dist <= 1 && dist < bestDist) { bestDist = dist; best = p }
+        }
+        return best
+    }
+
     private fun findBestMatch(input: String): Pokemon? {
+        if (input.any { isJapaneseChar(it) }) return findJapaneseMatch(input)
+
         val exact = pokemonList.find { it.name.equals(input, true) }
         if (exact != null) return exact
 
         if (input.isEmpty()) return null
-        val firstChar = input.first().lowercaseChar()
-        val candidates = pokemonList.filter { it.name.isNotEmpty() && it.name.startsWith(firstChar, true) }
+        // the gender sign is often read as a letter glued to the name (MEOWTH♂ -> MEOWTHS), so try without it too
+        val tries = listOfNotNull(input.lowercase(), input.dropLast(1).lowercase().takeIf { input.length > 4 })
 
         var bestPokemon: Pokemon? = null
         var bestDist = Int.MAX_VALUE
 
-        for (p in candidates) {
-            val dist = levenshtein(input.lowercase(), p.name.lowercase())
+        for (p in pokemonList) {
+            if (p.name.isEmpty()) continue
+            val name = p.name.lowercase()
             val threshold = if (p.name.length < 6) 1 else 2
-            if (dist <= threshold && dist < bestDist) {
-                bestDist = dist
-                bestPokemon = p
+            for (t in tries) {
+                if (kotlin.math.abs(t.length - name.length) > threshold) continue
+                val dist = levenshtein(fold(t), fold(name))
+                if (dist <= threshold && dist < bestDist) {
+                    bestDist = dist
+                    bestPokemon = p
+                }
             }
         }
         return bestPokemon
+    }
+
+    /**
+     * Letters the Game Boy Advance fonts (FireRed/LeafGreen especially) get misread as each other,
+     * folded to one letter before comparing: M/W/N/H look alike, as do O/D/Q, I/L, U/V.
+     */
+    private fun fold(s: String): String = buildString(s.length) {
+        for (c in s) append(when (c) {
+            'm', 'w', 'n', 'h' -> 'h'
+            'o', 'd', 'q' -> 'o'
+            'i', 'l' -> 'i'
+            'u', 'v' -> 'u'
+            else -> c
+        })
     }
 
     private fun levenshtein(lhs: CharSequence, rhs: CharSequence): Int {

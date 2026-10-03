@@ -1,5 +1,6 @@
 <resources>
-    <string name="app_name">DualScreenDex</string>
+    <string name="app_name">DualDex Plus</string>
+    <string name="pokedex_title">Pokédex</string>
 
     <string name="status_ready">Status: Ready to Scan</string>
     <string name="status_watching">Status: Watching Screen…</string>

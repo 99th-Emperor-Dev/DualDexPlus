@@ -19,7 +19,7 @@ object RomManager {
             name = "Modern (Gen 6+)",
             isBuiltIn = true,
             dexFilePath = "dex/vanilla_pokedex.csv",
-            regionalFilePath = "dex/vanilla_regional.csv",
+            regionalFilePath = "dex/forms.csv",
             matchupFilePath = "dex/vanilla_matchup.csv",
             baseMechanics = RomProfile.Mechanics.GEN_6_PLUS
         ),
@@ -28,9 +28,10 @@ object RomManager {
             name = "Classic (Gen 2-5)",
             isBuiltIn = true,
             dexFilePath = "dex/vanilla_pokedex.csv",
-            regionalFilePath = "dex/vanilla_regional.csv",
+            regionalFilePath = null,
             matchupFilePath = "dex/vanilla_matchup.csv",
-            baseMechanics = RomProfile.Mechanics.GEN_2_TO_5
+            baseMechanics = RomProfile.Mechanics.GEN_2_TO_5,
+            maxDexId = 649
         ),
         RomProfile(
             id = "vanilla_retro",
@@ -39,26 +40,28 @@ object RomManager {
             dexFilePath = "dex/vanilla_pokedex.csv",
             regionalFilePath = null,
             matchupFilePath = "dex/vanilla_matchup.csv",
-            baseMechanics = RomProfile.Mechanics.GEN_1
+            baseMechanics = RomProfile.Mechanics.GEN_1,
+            maxDexId = 151
         ),
-        RomProfile(
-            id = "lumi_plat",
-            name = "Luminescent Platinum",
-            isBuiltIn = true,
-            dexFilePath = "dex/luminescent_pokedex.csv",
-            regionalFilePath = "dex/luminescent_regional.csv",
-            matchupFilePath = "dex/vanilla_matchup.csv",
-            baseMechanics = RomProfile.Mechanics.GEN_6_PLUS
-        ),
-        RomProfile(
-            id = "radi_red",
-            name = "Radical Red",
-            isBuiltIn = true,
-            dexFilePath = "dex/radicalred_pokedex.csv",
-            regionalFilePath = "dex/radicalred_regional.csv",
-            matchupFilePath = "dex/vanilla_matchup.csv",
-            baseMechanics = RomProfile.Mechanics.GEN_6_PLUS
-        ),
+        // ROM hacks are hidden for now; uncomment to bring them back
+//        RomProfile(
+//            id = "lumi_plat",
+//            name = "Luminescent Platinum",
+//            isBuiltIn = true,
+//            dexFilePath = "dex/luminescent_pokedex.csv",
+//            regionalFilePath = "dex/luminescent_regional.csv",
+//            matchupFilePath = "dex/vanilla_matchup.csv",
+//            baseMechanics = RomProfile.Mechanics.GEN_6_PLUS
+//        ),
+//        RomProfile(
+//            id = "radi_red",
+//            name = "Radical Red",
+//            isBuiltIn = true,
+//            dexFilePath = "dex/radicalred_pokedex.csv",
+//            regionalFilePath = "dex/radicalred_regional.csv",
+//            matchupFilePath = "dex/vanilla_matchup.csv",
+//            baseMechanics = RomProfile.Mechanics.GEN_6_PLUS
+//        ),
     )
 
     private var customProfiles: MutableList<RomProfile> = mutableListOf()

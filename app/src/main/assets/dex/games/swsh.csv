@@ -1,0 +1,585 @@
+id,dex,number
+810,Galar,1
+811,Galar,2
+812,Galar,3
+813,Galar,4
+814,Galar,5
+815,Galar,6
+816,Galar,7
+817,Galar,8
+818,Galar,9
+824,Galar,10
+825,Galar,11
+826,Galar,12
+10,Galar,13
+11,Galar,14
+12,Galar,15
+736,Galar,16
+737,Galar,17
+738,Galar,18
+163,Galar,19
+164,Galar,20
+821,Galar,21
+822,Galar,22
+823,Galar,23
+819,Galar,24
+820,Galar,25
+519,Galar,26
+520,Galar,27
+521,Galar,28
+827,Galar,29
+828,Galar,30
+263,Galar,31
+264,Galar,32
+862,Galar,33
+831,Galar,34
+832,Galar,35
+270,Galar,36
+271,Galar,37
+272,Galar,38
+273,Galar,39
+274,Galar,40
+275,Galar,41
+833,Galar,42
+834,Galar,43
+509,Galar,44
+510,Galar,45
+835,Galar,46
+836,Galar,47
+659,Galar,48
+660,Galar,49
+572,Galar,50
+573,Galar,51
+761,Galar,52
+762,Galar,53
+763,Galar,54
+43,Galar,55
+44,Galar,56
+45,Galar,57
+182,Galar,58
+406,Galar,59
+315,Galar,60
+407,Galar,61
+278,Galar,62
+279,Galar,63
+595,Galar,64
+596,Galar,65
+309,Galar,66
+310,Galar,67
+37,Galar,68
+38,Galar,69
+58,Galar,70
+59,Galar,71
+582,Galar,72
+583,Galar,73
+584,Galar,74
+220,Galar,75
+221,Galar,76
+473,Galar,77
+225,Galar,78
+361,Galar,79
+362,Galar,80
+478,Galar,81
+343,Galar,82
+344,Galar,83
+749,Galar,84
+750,Galar,85
+557,Galar,86
+558,Galar,87
+622,Galar,88
+623,Galar,89
+517,Galar,90
+518,Galar,91
+177,Galar,92
+178,Galar,93
+759,Galar,94
+760,Galar,95
+459,Galar,96
+460,Galar,97
+98,Galar,98
+99,Galar,99
+194,Galar,100
+195,Galar,101
+341,Galar,102
+342,Galar,103
+290,Galar,104
+291,Galar,105
+292,Galar,106
+236,Galar,107
+106,Galar,108
+107,Galar,109
+237,Galar,110
+674,Galar,111
+675,Galar,112
+599,Galar,113
+600,Galar,114
+601,Galar,115
+415,Galar,116
+416,Galar,117
+436,Galar,118
+437,Galar,119
+280,Galar,120
+281,Galar,121
+282,Galar,122
+475,Galar,123
+425,Galar,124
+426,Galar,125
+829,Galar,126
+830,Galar,127
+420,Galar,128
+421,Galar,129
+434,Galar,130
+435,Galar,131
+535,Galar,132
+536,Galar,133
+537,Galar,134
+355,Galar,135
+356,Galar,136
+477,Galar,137
+66,Galar,138
+67,Galar,139
+68,Galar,140
+92,Galar,141
+93,Galar,142
+94,Galar,143
+129,Galar,144
+130,Galar,145
+118,Galar,146
+119,Galar,147
+223,Galar,148
+224,Galar,149
+90,Galar,150
+91,Galar,151
+349,Galar,152
+350,Galar,153
+550,Galar,154
+746,Galar,155
+771,Galar,156
+568,Galar,157
+569,Galar,158
+850,Galar,159
+851,Galar,160
+837,Galar,161
+838,Galar,162
+839,Galar,163
+50,Galar,164
+51,Galar,165
+529,Galar,166
+530,Galar,167
+524,Galar,168
+525,Galar,169
+526,Galar,170
+532,Galar,171
+533,Galar,172
+534,Galar,173
+527,Galar,174
+528,Galar,175
+714,Galar,176
+715,Galar,177
+95,Galar,178
+208,Galar,179
+846,Galar,180
+847,Galar,181
+52,Galar,182
+863,Galar,183
+53,Galar,184
+868,Galar,185
+869,Galar,186
+742,Galar,187
+743,Galar,188
+597,Galar,189
+598,Galar,190
+710,Galar,191
+711,Galar,192
+172,Galar,193
+25,Galar,194
+26,Galar,195
+133,Galar,196
+134,Galar,197
+135,Galar,198
+136,Galar,199
+196,Galar,200
+197,Galar,201
+470,Galar,202
+471,Galar,203
+700,Galar,204
+840,Galar,205
+841,Galar,206
+842,Galar,207
+677,Galar,208
+678,Galar,209
+684,Galar,210
+685,Galar,211
+682,Galar,212
+683,Galar,213
+751,Galar,214
+752,Galar,215
+360,Galar,216
+202,Galar,217
+83,Galar,218
+865,Galar,219
+170,Galar,220
+171,Galar,221
+453,Galar,222
+454,Galar,223
+559,Galar,224
+560,Galar,225
+618,Galar,226
+213,Galar,227
+339,Galar,228
+340,Galar,229
+422,Galar,230
+423,Galar,231
+767,Galar,232
+768,Galar,233
+688,Galar,234
+689,Galar,235
+222,Galar,236
+864,Galar,237
+859,Galar,238
+860,Galar,239
+861,Galar,240
+856,Galar,241
+857,Galar,242
+858,Galar,243
+757,Galar,244
+758,Galar,245
+624,Galar,246
+625,Galar,247
+538,Galar,248
+539,Galar,249
+109,Galar,250
+110,Galar,251
+438,Galar,252
+185,Galar,253
+173,Galar,254
+35,Galar,255
+36,Galar,256
+175,Galar,257
+176,Galar,258
+468,Galar,259
+446,Galar,260
+143,Galar,261
+546,Galar,262
+547,Galar,263
+111,Galar,264
+112,Galar,265
+464,Galar,266
+574,Galar,267
+575,Galar,268
+576,Galar,269
+577,Galar,270
+578,Galar,271
+579,Galar,272
+588,Galar,273
+589,Galar,274
+616,Galar,275
+617,Galar,276
+605,Galar,277
+606,Galar,278
+613,Galar,279
+614,Galar,280
+627,Galar,281
+628,Galar,282
+629,Galar,283
+630,Galar,284
+451,Galar,285
+452,Galar,286
+607,Galar,287
+608,Galar,288
+609,Galar,289
+686,Galar,290
+687,Galar,291
+215,Galar,292
+461,Galar,293
+302,Galar,294
+303,Galar,295
+556,Galar,296
+561,Galar,297
+447,Galar,298
+448,Galar,299
+324,Galar,300
+778,Galar,301
+878,Galar,302
+879,Galar,303
+211,Galar,304
+592,Galar,305
+593,Galar,306
+747,Galar,307
+748,Galar,308
+845,Galar,309
+848,Galar,310
+849,Galar,311
+843,Galar,312
+844,Galar,313
+449,Galar,314
+450,Galar,315
+632,Galar,316
+631,Galar,317
+694,Galar,318
+695,Galar,319
+701,Galar,320
+328,Galar,321
+329,Galar,322
+330,Galar,323
+610,Galar,324
+611,Galar,325
+612,Galar,326
+562,Galar,327
+867,Galar,328
+563,Galar,329
+679,Galar,330
+680,Galar,331
+681,Galar,332
+77,Galar,333
+78,Galar,334
+854,Galar,335
+855,Galar,336
+876,Galar,337
+708,Galar,338
+709,Galar,339
+755,Galar,340
+756,Galar,341
+765,Galar,342
+766,Galar,343
+877,Galar,344
+870,Galar,345
+780,Galar,346
+776,Galar,347
+777,Galar,348
+872,Galar,349
+873,Galar,350
+852,Galar,351
+853,Galar,352
+871,Galar,353
+458,Galar,354
+226,Galar,355
+320,Galar,356
+321,Galar,357
+712,Galar,358
+713,Galar,359
+781,Galar,360
+131,Galar,361
+337,Galar,362
+338,Galar,363
+439,Galar,364
+122,Galar,365
+866,Galar,366
+554,Galar,367
+555,Galar,368
+874,Galar,369
+875,Galar,370
+884,Galar,371
+479,Galar,372
+132,Galar,373
+880,Galar,374
+881,Galar,375
+882,Galar,376
+883,Galar,377
+4,Galar,378
+5,Galar,379
+6,Galar,380
+772,Galar,381
+773,Galar,382
+246,Galar,383
+247,Galar,384
+248,Galar,385
+633,Galar,386
+634,Galar,387
+635,Galar,388
+704,Galar,389
+705,Galar,390
+706,Galar,391
+782,Galar,392
+783,Galar,393
+784,Galar,394
+885,Galar,395
+886,Galar,396
+887,Galar,397
+888,Galar,398
+889,Galar,399
+890,Galar,400
+79,Isle of Armor,1
+80,Isle of Armor,2
+199,Isle of Armor,3
+427,Isle of Armor,4
+428,Isle of Armor,5
+440,Isle of Armor,6
+113,Isle of Armor,7
+242,Isle of Armor,8
+174,Isle of Armor,11
+39,Isle of Armor,12
+40,Isle of Armor,13
+753,Isle of Armor,17
+754,Isle of Armor,18
+661,Isle of Armor,22
+662,Isle of Armor,23
+663,Isle of Armor,24
+403,Isle of Armor,25
+404,Isle of Armor,26
+405,Isle of Armor,27
+707,Isle of Armor,28
+63,Isle of Armor,31
+64,Isle of Armor,32
+65,Isle of Armor,33
+72,Isle of Armor,40
+73,Isle of Armor,41
+206,Isle of Armor,52
+626,Isle of Armor,53
+108,Isle of Armor,54
+463,Isle of Armor,55
+621,Isle of Armor,63
+1,Isle of Armor,68
+2,Isle of Armor,69
+3,Isle of Armor,70
+7,Isle of Armor,71
+8,Isle of Armor,72
+9,Isle of Armor,73
+543,Isle of Armor,74
+544,Isle of Armor,75
+545,Isle of Armor,76
+590,Isle of Armor,77
+591,Isle of Armor,78
+764,Isle of Armor,79
+114,Isle of Armor,80
+465,Isle of Armor,81
+570,Isle of Armor,87
+571,Isle of Armor,88
+120,Isle of Armor,98
+121,Isle of Armor,99
+891,Isle of Armor,100
+892,Isle of Armor,101
+587,Isle of Armor,102
+702,Isle of Armor,103
+81,Isle of Armor,105
+82,Isle of Armor,106
+462,Isle of Armor,107
+318,Isle of Armor,111
+319,Isle of Armor,112
+506,Isle of Armor,113
+507,Isle of Armor,114
+508,Isle of Armor,115
+128,Isle of Armor,116
+241,Isle of Armor,117
+123,Isle of Armor,118
+212,Isle of Armor,119
+127,Isle of Armor,120
+214,Isle of Armor,121
+769,Isle of Armor,133
+770,Isle of Armor,134
+298,Isle of Armor,139
+183,Isle of Armor,140
+184,Isle of Armor,141
+60,Isle of Armor,142
+61,Isle of Armor,143
+62,Isle of Armor,144
+186,Isle of Armor,145
+54,Isle of Armor,146
+55,Isle of Armor,147
+293,Isle of Armor,148
+294,Isle of Armor,149
+295,Isle of Armor,150
+227,Isle of Armor,153
+744,Isle of Armor,157
+745,Isle of Armor,158
+619,Isle of Armor,163
+620,Isle of Armor,164
+27,Isle of Armor,168
+28,Isle of Armor,169
+104,Isle of Armor,170
+105,Isle of Armor,171
+115,Isle of Armor,172
+551,Isle of Armor,176
+552,Isle of Armor,177
+553,Isle of Armor,178
+636,Isle of Armor,186
+637,Isle of Armor,187
+690,Isle of Armor,194
+691,Isle of Armor,195
+692,Isle of Armor,196
+693,Isle of Armor,197
+116,Isle of Armor,198
+117,Isle of Armor,199
+230,Isle of Armor,200
+548,Isle of Armor,201
+549,Isle of Armor,202
+102,Isle of Armor,205
+103,Isle of Armor,206
+137,Isle of Armor,208
+233,Isle of Armor,209
+474,Isle of Armor,210
+893,Isle of Armor,211
+238,Crown Tundra,13
+124,Crown Tundra,14
+239,Crown Tundra,15
+125,Crown Tundra,16
+466,Crown Tundra,17
+240,Crown Tundra,18
+126,Crown Tundra,19
+467,Crown Tundra,20
+531,Crown Tundra,21
+615,Crown Tundra,30
+333,Crown Tundra,35
+334,Crown Tundra,36
+442,Crown Tundra,47
+29,Crown Tundra,65
+30,Crown Tundra,66
+31,Crown Tundra,67
+32,Crown Tundra,68
+33,Crown Tundra,69
+34,Crown Tundra,70
+696,Crown Tundra,83
+697,Crown Tundra,84
+698,Crown Tundra,85
+699,Crown Tundra,86
+359,Crown Tundra,107
+371,Crown Tundra,113
+372,Crown Tundra,114
+373,Crown Tundra,115
+443,Crown Tundra,116
+444,Crown Tundra,117
+445,Crown Tundra,118
+138,Crown Tundra,123
+139,Crown Tundra,124
+140,Crown Tundra,125
+141,Crown Tundra,126
+142,Crown Tundra,127
+703,Crown Tundra,128
+374,Crown Tundra,129
+375,Crown Tundra,130
+376,Crown Tundra,131
+41,Crown Tundra,144
+42,Crown Tundra,145
+169,Crown Tundra,146
+564,Crown Tundra,147
+565,Crown Tundra,148
+566,Crown Tundra,149
+567,Crown Tundra,150
+363,Crown Tundra,159
+364,Crown Tundra,160
+365,Crown Tundra,161
+345,Crown Tundra,183
+346,Crown Tundra,184
+347,Crown Tundra,185
+348,Crown Tundra,186
+369,Crown Tundra,187
+304,Crown Tundra,191
+305,Crown Tundra,192
+306,Crown Tundra,193
+147,Crown Tundra,194
+148,Crown Tundra,195
+149,Crown Tundra,196
+377,Crown Tundra,197
+378,Crown Tundra,198
+379,Crown Tundra,199
+894,Crown Tundra,200
+895,Crown Tundra,201
+144,Crown Tundra,202
+145,Crown Tundra,203
+146,Crown Tundra,204
+638,Crown Tundra,205
+639,Crown Tundra,206
+640,Crown Tundra,207
+896,Crown Tundra,208
+897,Crown Tundra,209
+898,Crown Tundra,210

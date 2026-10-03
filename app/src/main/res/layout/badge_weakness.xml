@@ -2,9 +2,10 @@
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="40dp"
-    app:cardCornerRadius="8dp"
+    android:layout_height="36dp"
+    app:cardCornerRadius="18dp"
     app:cardElevation="0dp"
+    app:cardPreventCornerOverlap="true"
     app:cardBackgroundColor="@android:color/transparent">
 
     <LinearLayout
@@ -18,21 +19,24 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:gravity="center"
+            android:paddingStart="10dp"
             android:text="@string/fire2"
             android:textColor="#FFFFFF"
-            android:textSize="13sp"
+            android:textSize="12sp"
+            android:letterSpacing="0.03"
             android:textStyle="bold"
             android:textAllCaps="true" />
 
         <TextView
             android:id="@+id/tvBadgeMult"
-            android:layout_width="40dp"
+            android:layout_width="38dp"
             android:layout_height="match_parent"
-            android:background="#33000000"
+            android:background="#2E000000"
             android:gravity="center"
             android:text="@string/_2"
             android:textColor="#FFFFFF"
-            android:textSize="12sp" />
+            android:textSize="12sp"
+            android:textStyle="bold" />
 
     </LinearLayout>
 </androidx.cardview.widget.CardView>

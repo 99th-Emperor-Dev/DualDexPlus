@@ -31,9 +31,26 @@ class ProfileAdapter(
         val p = profiles[position]
         holder.name.text = p.name
 
+        val theme = ThemeManager.currentTheme
         val isSelected = p.id == currentId
-        holder.card.strokeColor = if (isSelected) Color.BLUE else Color.TRANSPARENT
-        holder.card.strokeWidth = if (isSelected) 4 else 0
+        holder.name.setTextColor(theme.listTextColor)
+        // game-menu cursor on the selected entry
+        holder.name.text = if (isSelected) (if (theme.pixelFont) "> " else "▶ ") + p.name else p.name
+        val inner = holder.card.getChildAt(0)
+        if (theme.isRetroScreen) {
+            holder.card.setCardBackgroundColor(Color.TRANSPARENT)
+            holder.card.strokeWidth = 0
+            holder.card.radius = 0f
+            val fill = if (isSelected) androidx.core.graphics.ColorUtils.blendARGB(theme.gridBackgroundColor, theme.frameColor, 0.12f)
+                else theme.gridBackgroundColor
+            inner.background = ThemeManager.boxDrawable(holder.itemView.context, fill)
+        } else {
+            inner.background = null
+            holder.card.setCardBackgroundColor(theme.gridBackgroundColor)
+            holder.card.strokeColor = if (isSelected) theme.listTextColor else Color.TRANSPARENT
+            holder.card.strokeWidth = if (isSelected) 4 else 0
+        }
+        ThemeManager.applyFont(holder.itemView)
 
         // hide delete button for built-in profiles
         holder.btnDelete.visibility = if (p.isBuiltIn) View.GONE else View.VISIBLE

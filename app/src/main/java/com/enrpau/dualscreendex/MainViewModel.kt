@@ -6,6 +6,9 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.enrpau.dualscreendex.data.RomManager
 import com.enrpau.dualscreendex.data.RomProfile
+import com.enrpau.dualscreendex.data.Team
+import com.enrpau.dualscreendex.data.GameCatalog
+import com.enrpau.dualscreendex.data.TeamManager
 
 class MainViewModel(application: Application) : AndroidViewModel(application) {
 
@@ -14,9 +17,12 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
     private val resetHandler = android.os.Handler(android.os.Looper.getMainLooper())
 
     private val resetRunnable = Runnable {
-        _isBattleMode.value = false
+        if (isLiveUpdateActive) {
+            _isBattleMode.value = false
+            _showBattleTab.value = false
+        }
         battleList = emptyList()
-        _showBattleTab.value = false
+        battleTabText.value = ""
     }
 
     private val _displayedPokemon = MutableLiveData<Pokemon>()
@@ -28,12 +34,126 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
     private val _isBattleMode = MutableLiveData(false)
     val isBattleMode: LiveData<Boolean> = _isBattleMode
 
+    private val _isTeamMode = MutableLiveData(false)
+    val isTeamMode: LiveData<Boolean> = _isTeamMode
+
+    private val _teamList = MutableLiveData<List<Pokemon?>>()
+    val teamList: LiveData<List<Pokemon?>> = _teamList
+
+    private val _activeTeam = MutableLiveData<Team>()
+    val activeTeam: LiveData<Team> = _activeTeam
+
+    // opponent matchups against each of your team members
+    data class CounterData(val pokemon: Pokemon, val bestHit: Double, val bestHitType: PokemonType, val worstTaken: Double)
+    val counterList = MutableLiveData<List<CounterData>>()
+
+    // attacking type -> number of team members weak to it (only shared weaknesses)
+    val teamWeaknesses = MutableLiveData<List<MainActivity.MatchupData>>()
+    // types that none of the team's STAB types hit super-effectively
+    val teamCoverageGaps = MutableLiveData<List<PokemonType>>()
+
+    private fun loadTeam() {
+        val team = TeamManager.activeTeam(getApplication(), teamScope())
+        _activeTeam.value = team
+        _teamList.value = team.members
+        calculateTeamAnalysis(team.members)
+        _displayedPokemon.value?.let { calculateCounters(it) }
+    }
+
+    // teams belong to the selected game when "Match dex to game" is on, otherwise to the Dex Version
+    private fun teamScope(): String =
+        GameCatalog.activeFamily(getApplication())?.takeIf { it.themeId != "dynamic" }?.let { "game_" + it.themeId }
+            ?: RomManager.currentProfile.id
+
+    /** Shown above the team: "Crystal", "Sword"... or the Dex Version name. */
+    fun teamScopeName(): String = GameCatalog.activeName(getApplication()) ?: RomManager.currentProfile.name
+
+    fun teamsForCurrentGame(): List<Team> = TeamManager.teamsFor(getApplication(), teamScope())
+
+    fun switchTeam(team: Team) {
+        TeamManager.setActive(getApplication(), team)
+        loadTeam()
+    }
+
+    fun createTeam(name: String?) {
+        val profileId = teamScope()
+        val finalName = name?.takeIf { it.isNotBlank() } ?: TeamManager.nextDefaultName(getApplication(), profileId)
+        TeamManager.createTeam(getApplication(), profileId, finalName)
+        loadTeam()
+    }
+
+    fun renameActiveTeam(name: String) {
+        val team = _activeTeam.value ?: return
+        if (name.isBlank()) return
+        TeamManager.renameTeam(getApplication(), team.id, name.trim())
+        loadTeam()
+    }
+
+    fun deleteActiveTeam() {
+        val team = _activeTeam.value ?: return
+        TeamManager.deleteTeam(getApplication(), team.id)
+        loadTeam()
+    }
+
+    /** Team as Showdown-style text (species only), e.g. for pasting into Showdown or a note. */
+    fun exportTeamText(): String =
+        _teamList.value.orEmpty().filterNotNull().joinToString("\n\n") { p ->
+            val species = p.name.split(' ', '-').joinToString("-") { it.replaceFirstChar { c -> c.uppercase() } }
+            when (p.variantLabel?.lowercase()) {
+                null -> species
+                "alolan" -> "$species-Alola"
+                "galarian" -> "$species-Galar"
+                "hisuian" -> "$species-Hisui"
+                "paldean" -> "$species-Paldea"
+                else -> species
+            }
+        }
+
+    /** Fills the active team from Showdown text. Returns how many pokemon were recognised. */
+    fun importTeamText(text: String): Int {
+        val team = _activeTeam.value ?: return 0
+        fun norm(s: String) = s.lowercase().replace(Regex("[^a-z0-9]"), "")
+        val all = repository.getAllPokemon()
+        val regionSuffix = mapOf("alola" to "Alolan", "galar" to "Galarian", "hisui" to "Hisuian", "paldea" to "Paldean")
+
+        val found = text.split(Regex("\\r?\\n\\s*\\r?\\n")).mapNotNull { block ->
+            // "Nickname (Species) (M) @ Item" -> Species
+            var line = block.lineSequence().firstOrNull { it.isNotBlank() }?.substringBefore("@")?.trim() ?: return@mapNotNull null
+            line = line.replace(Regex("\\((M|F)\\)\\s*$"), "").trim()
+            Regex("\\(([^)]+)\\)\\s*$").find(line)?.let { line = it.groupValues[1] }
+
+            val parts = line.split('-')
+            val region = regionSuffix[parts.last().lowercase()]
+            val baseName = if (region != null) parts.dropLast(1).joinToString("-") else line
+            val candidates = all.filter { p ->
+                val n = norm(p.name)
+                n == norm(baseName) || n.startsWith(norm(baseName)) && p.name.contains('-')
+            }
+            candidates.firstOrNull { it.variantLabel == region } ?: candidates.firstOrNull()
+        }.take(TeamManager.TEAM_SIZE)
+
+        if (found.isEmpty()) return 0
+        found.forEachIndexed { i, p -> TeamManager.setMember(getApplication(), team.id, i, p) }
+        for (i in found.size until TeamManager.TEAM_SIZE) TeamManager.setMember(getApplication(), team.id, i, null)
+        loadTeam()
+        return found.size
+    }
+
+    private fun setTeamMember(slot: Int, pokemon: Pokemon?) {
+        val team = _activeTeam.value ?: return
+        TeamManager.setMember(getApplication(), team.id, slot, pokemon)
+        loadTeam()
+    }
+
+    private val _selectionIndex = MutableLiveData<Int>(-1)
+    val selectionIndex: LiveData<Int> = _selectionIndex
+
     private val _showBattleTab = MutableLiveData(false)
     val showBattleTab: LiveData<Boolean> = _showBattleTab
     val battleTabText = MutableLiveData<String>()
     val battleTabColor = MutableLiveData<Int>()
 
-    private var isLiveUpdateActive = true
+    private var isLiveUpdateActive = false
 
     val isPrevButtonVisible = MutableLiveData<Boolean>()
     val isNextButtonVisible = MutableLiveData<Boolean>()
@@ -56,19 +176,24 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
 
     init {
         _pokedexList.value = fullList
+        loadTeam()
         if (fullList.isNotEmpty()) selectPokemon(fullList[0])
     }
 
     fun refreshSettings() {
+        GameCatalog.syncProfile(getApplication())
         repository.reloadDatabase()
 
         val newList = repository.getAllPokemon()
         _pokedexList.value = newList
 
         currentVariantList = emptyList()
+        currentFilteredList = newList
 
         val profile = RomManager.currentProfile
         currentMechanics = profile.baseMechanics
+        // the game may have changed in settings, so swap to that game's teams
+        loadTeam()
 
         val current = displayedPokemon.value
         if (current != null) {
@@ -88,6 +213,14 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     fun onPokemonSelectedFromList(pokemon: Pokemon) {
+        val sIdx = _selectionIndex.value ?: -1
+        if (sIdx != -1) {
+            setTeamMember(sIdx, pokemon)
+            _selectionIndex.value = -1
+            _isTeamMode.value = true
+            return
+        }
+
         isLiveUpdateActive = false
         selectedIndex = currentFilteredList.indexOfFirst { it.name == pokemon.name }
         if (selectedIndex == -1) selectedIndex = 0
@@ -99,14 +232,16 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
         resetHandler.removeCallbacks(resetRunnable)
 
         if (names.isNullOrEmpty()) {
+            // a missed scan never closes the card you're reading; only the list forgets the opponent
             if (_isBattleMode.value != true) {
-                _showBattleTab.value = false
                 battleList = emptyList()
-            } else {
-                resetHandler.postDelayed(resetRunnable, 5000)
+                _showBattleTab.value = false
             }
+            // single misses happen mid-battle; only several in a row (~6s) mean the battle is over
+            if (++emptyScans >= 4) autoOpenBlocked = false
             return
         }
+        emptyScans = 0
 
         val scanned = ArrayList<Pokemon>()
         val allPokemon = repository.getAllPokemon()
@@ -134,21 +269,36 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
             battleTabColor.value = battleList[0].type1.colorHex
         }
 
-        if (_isBattleMode.value == true) {
-            if (isLiveUpdateActive) {
-                if (battleList.isNotEmpty()) {
-                    selectedIndex = 0
-                    selectPokemon(battleList[0])
-                }
-            }
-            _showBattleTab.value = false
+        val hasOpponent = battleList.isNotEmpty()
 
+        if (_isBattleMode.value == true) {
+            // on a card nothing changes by itself (it used to flicker between scans); instead a button
+            // with the detected pokemon's name appears, unless that pokemon is already on the card
+            val shown = _displayedPokemon.value
+            _showBattleTab.value = hasOpponent && battleList.none { it.id == shown?.id }
+        } else if (_isTeamMode.value == true) {
+            // Team builder - just show the tab
+            _showBattleTab.value = hasOpponent
         } else {
-            _showBattleTab.value = true
+            // Main Dex list
+            if (hasOpponent && autoOpenBlocked) {
+                // you closed this one: stay on the list, the name button is enough until the opponent changes
+                _showBattleTab.value = true
+            } else if (hasOpponent) {
+                // AUTO JUMP ONLY FROM MAIN DEX
+                isLiveUpdateActive = true
+                _isBattleMode.value = true
+                selectedIndex = 0
+                selectPokemon(battleList[0])
+                _showBattleTab.value = false
+            } else {
+                _showBattleTab.value = false
+            }
         }
     }
 
     fun onBattleTabClicked() {
+        _showBattleTab.value = false
         if (battleList.isNotEmpty()) {
             isLiveUpdateActive = true
             _isBattleMode.value = true
@@ -159,8 +309,66 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
 
     fun onBackToListClicked() {
         _isBattleMode.value = false
+        _isTeamMode.value = false
+        isLiveUpdateActive = false
+        _selectionIndex.value = -1
         _showBattleTab.value = battleList.isNotEmpty()
         userDismissedBattle = true
+        if (battleList.isNotEmpty()) autoOpenBlocked = true
+    }
+
+    /** You closed a scanned card mid-battle: stay on the list (name button only) until the battle ends. */
+    private var autoOpenBlocked = false
+    private var emptyScans = 0
+
+    fun onBackToBattleClicked() {
+        onJumpToOpponentClicked()
+    }
+
+    fun onJumpToOpponentClicked() {
+        if (battleList.isNotEmpty()) {
+            isLiveUpdateActive = true
+            _isBattleMode.value = true
+            _isTeamMode.value = false
+            selectedIndex = 0
+            selectPokemon(battleList[0])
+            _showBattleTab.value = false
+        } else {
+            // If nothing scanned, just return to a generic battle mode if needed
+            _isTeamMode.value = false
+            _isBattleMode.value = true
+        }
+        _selectionIndex.value = -1
+    }
+
+    fun onTeamBuilderClicked() {
+        _isTeamMode.value = true
+        _isBattleMode.value = false
+        _selectionIndex.value = -1
+    }
+
+    // the slot keeps its current member until a replacement is actually picked
+    fun startSelectingForTeam(index: Int) {
+        _selectionIndex.value = index
+        _isTeamMode.value = false
+        _isBattleMode.value = false
+    }
+
+    fun cancelTeamSelection() {
+        _selectionIndex.value = -1
+        _isTeamMode.value = true
+    }
+
+    fun removeTeamMember(index: Int) {
+        if (index !in 0 until TeamManager.TEAM_SIZE) return
+        setTeamMember(index, null)
+    }
+
+    fun onPokemonSelectedFromTeam(pokemon: Pokemon) {
+        isLiveUpdateActive = false
+        selectPokemon(pokemon)
+        _isBattleMode.value = true
+        _isTeamMode.value = false
     }
 
     fun onNextClicked() = cycleSelection(1)
@@ -197,40 +405,20 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
         _displayedPokemon.value = target
         calculateMatchups(target)
 
-        val activeList = if (isLiveUpdateActive) battleList else currentFilteredList
-
-        if (activeList.isNotEmpty()) {
-            val currentIndex = activeList.indexOfFirst {
-                it.name == target.name && it.variantLabel == target.variantLabel
+        // previous / next always walk the whole dex (in the game's order), even after a search or a scan
+        val dex = repository.getAllPokemon()
+        val currentIndex = dex.indexOfFirst { it.id == target.id && it.variantLabel == target.variantLabel }
+            .takeIf { it != -1 } ?: dex.indexOfFirst { it.id == target.id }
+        if (currentIndex != -1 && dex.size > 1) {
+            fun getDisplayName(p: Pokemon): String {
+                val name = p.name.replaceFirstChar { it.uppercase() }
+                return if (p.variantLabel != null) "$name (${p.variantLabel})" else name
             }
-
-            if (currentIndex != -1) {
-                fun getDisplayName(p: Pokemon): String {
-                    val name = p.name.replaceFirstChar { it.uppercase() }
-                    return if (p.variantLabel != null) "$name (${p.variantLabel})" else name
-                }
-
-                if (isLiveUpdateActive) {
-                    val hasPrev = currentIndex > 0
-                    val hasNext = currentIndex < activeList.size - 1
-                    isPrevButtonVisible.value = hasPrev
-                    isNextButtonVisible.value = hasNext
-                    if (hasPrev) prevPokemonName.value = getDisplayName(activeList[currentIndex - 1])
-                    if (hasNext) nextPokemonName.value = getDisplayName(activeList[currentIndex + 1])
-
-                } else {
-                    val showButtons = activeList.size > 1
-                    isPrevButtonVisible.value = showButtons
-                    isNextButtonVisible.value = showButtons
-
-                    if (showButtons) {
-                        val prevIndex = if (currentIndex - 1 < 0) activeList.size - 1 else currentIndex - 1
-                        val nextIndex = if (currentIndex + 1 >= activeList.size) 0 else currentIndex + 1
-                        prevPokemonName.value = getDisplayName(activeList[prevIndex])
-                        nextPokemonName.value = getDisplayName(activeList[nextIndex])
-                    }
-                }
-            }
+            selectedIndex = currentIndex
+            isPrevButtonVisible.value = true
+            isNextButtonVisible.value = true
+            prevPokemonName.value = getDisplayName(dex[(currentIndex - 1 + dex.size) % dex.size])
+            nextPokemonName.value = getDisplayName(dex[(currentIndex + 1) % dex.size])
         } else {
             isPrevButtonVisible.value = false
             isNextButtonVisible.value = false
@@ -243,6 +431,13 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
 
         for (attacker in PokemonType.entries) {
             if (attacker == PokemonType.UNKNOWN) continue
+
+            // Exclude types that don't exist in the current mechanics
+            if (currentMechanics == RomProfile.Mechanics.GEN_1) {
+                if (attacker == PokemonType.STEEL || attacker == PokemonType.DARK || attacker == PokemonType.FAIRY) continue
+            } else if (currentMechanics == RomProfile.Mechanics.GEN_2_TO_5) {
+                if (attacker == PokemonType.FAIRY) continue
+            }
 
             val (t1, t2) = GenerationHelper.getGenSpecificTypes(pokemon, currentMechanics)
 
@@ -258,25 +453,62 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
 
         weaknessList.value = weak
         resistanceList.value = resist
+        calculateCounters(pokemon)
+    }
+
+    private fun typesOf(p: Pokemon): List<PokemonType> {
+        val (t1, t2) = GenerationHelper.getGenSpecificTypes(p, currentMechanics)
+        return listOf(t1, t2).filter { it != PokemonType.UNKNOWN }
+    }
+
+    private fun effectiveness(attacker: PokemonType, defender: Pokemon): Double =
+        typesOf(defender).fold(1.0) { acc, t -> acc * TypeMatchup.getMultiplier(attacker, t, getApplication()) }
+
+    private fun isTypeInGame(type: PokemonType): Boolean = when (currentMechanics) {
+        RomProfile.Mechanics.GEN_1 -> type != PokemonType.STEEL && type != PokemonType.DARK && type != PokemonType.FAIRY
+        RomProfile.Mechanics.GEN_2_TO_5 -> type != PokemonType.FAIRY
+        else -> true
+    } && type != PokemonType.UNKNOWN
+
+    // how each team member fares against the pokemon on the card (STAB types only)
+    private fun calculateCounters(opponent: Pokemon) {
+        val members = _teamList.value?.filterNotNull().orEmpty()
+        counterList.value = members.map { member ->
+            val hits = typesOf(member).map { it to effectiveness(it, opponent) }
+            val best = hits.maxByOrNull { it.second } ?: (PokemonType.UNKNOWN to 1.0)
+            val worstTaken = typesOf(opponent).maxOfOrNull { effectiveness(it, member) } ?: 1.0
+            CounterData(member, best.second, best.first, worstTaken)
+        }.sortedWith(compareByDescending<CounterData> { it.bestHit }.thenBy { it.worstTaken })
+    }
+
+    private fun calculateTeamAnalysis(team: List<Pokemon?>) {
+        val members = team.filterNotNull()
+        if (members.isEmpty()) {
+            teamWeaknesses.value = emptyList()
+            teamCoverageGaps.value = emptyList()
+            return
+        }
+        val allTypes = PokemonType.entries.filter { isTypeInGame(it) }
+
+        teamWeaknesses.value = allTypes.mapNotNull { attacker ->
+            val weak = members.count { effectiveness(attacker, it) > 1.0 }
+            val resist = members.count { effectiveness(attacker, it) < 1.0 }
+            if (weak >= 2 && weak > resist) MainActivity.MatchupData(attacker, weak.toDouble()) else null
+        }.sortedByDescending { it.multiplier }
+
+        val stab = members.flatMap { typesOf(it) }.toSet()
+        teamCoverageGaps.value = allTypes.filter { defender ->
+            stab.none { atk -> TypeMatchup.getMultiplier(atk, defender, getApplication()) > 1.0 }
+        }
     }
 
     private fun cycleSelection(direction: Int) {
-        val activeList = if (isLiveUpdateActive) battleList else currentFilteredList
-        if (activeList.isEmpty()) return
-
-        var newIndex = selectedIndex + direction
-
-        if (isLiveUpdateActive) {
-            if (newIndex in activeList.indices) {
-                selectedIndex = newIndex
-                selectPokemon(activeList[selectedIndex])
-            }
-        } else {
-            if (newIndex < 0) newIndex = activeList.size - 1
-            if (newIndex >= activeList.size) newIndex = 0
-            selectedIndex = newIndex
-            selectPokemon(activeList[selectedIndex])
-        }
+        // whole dex, wrapping around (selectPokemon keeps selectedIndex in step with the card)
+        val dex = repository.getAllPokemon()
+        if (dex.isEmpty()) return
+        val next = (selectedIndex + direction + dex.size) % dex.size
+        isLiveUpdateActive = false
+        selectPokemon(dex[next])
     }
 
     fun hasVariants(): Boolean = currentVariantList.size > 1

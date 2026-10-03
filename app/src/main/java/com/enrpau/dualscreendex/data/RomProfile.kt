@@ -12,7 +12,10 @@ data class RomProfile(
     val regionalFilePath: String? = null,
     val matchupFilePath: String? = null,
 
-    val baseMechanics: Mechanics = Mechanics.GEN_6_PLUS
+    val baseMechanics: Mechanics = Mechanics.GEN_6_PLUS,
+
+    // only pokemon up to this national dex number exist in the game (null = no limit)
+    val maxDexId: Int? = null
 ) {
     enum class Mechanics {
         GEN_1,      // Special/Physical split by type, No Dark/Steel/Fairy

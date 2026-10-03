@@ -13,3 +13,8 @@
 .externalNativeBuild
 .cxx
 local.properties
+
+# DualDex Plus: raw recordings and built APKs stay out of the repo
+/showcase
+/release
+.kotlin

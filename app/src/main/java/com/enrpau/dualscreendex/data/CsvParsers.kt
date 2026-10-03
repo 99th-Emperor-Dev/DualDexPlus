@@ -20,8 +20,9 @@ object CsvParsers {
             } else {
                 PokemonType.UNKNOWN
             }
+            val japaneseKana = tokens.getOrNull(4)?.trim()?.takeIf { it.isNotEmpty() }
             // Base pokemon have no variant label
-            Pokemon(name, id, t1, t2, null)
+            Pokemon(name, id, t1, t2, null, japaneseKana = japaneseKana)
         }
     }
 
@@ -44,6 +45,13 @@ object CsvParsers {
             Pokemon("TEMP_NAME", id, t1, t2, label)
         }
     }
+
+    // bundled alternate forms (megas, primals, regional forms), same format as the regional csv
+    fun parseFormsAsset(context: Context, assetPath: String): List<Pokemon> =
+        parseFile(context, assetPath, true) { tokens ->
+            val t2 = if (tokens.size > 3 && tokens[3].isNotBlank()) PokemonType.fromString(tokens[3].trim()) else PokemonType.UNKNOWN
+            Pokemon("TEMP_NAME", tokens[0].trim().toInt(), PokemonType.fromString(tokens[2].trim()), t2, tokens[1].trim())
+        }
 
     // format: attacker x defender standard chart
     fun parseMatchupChart(context: Context, profile: RomProfile): Map<String, Double> {

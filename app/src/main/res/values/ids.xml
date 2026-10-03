@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <item name="tag_original_typeface" type="id" />
+    <item name="tag_original_textsize" type="id" />
+    <item name="tag_idle_anim" type="id" />
+    <item name="tag_anim_key" type="id" />
+    <item name="tag_swipe_listener" type="id" />
+</resources>

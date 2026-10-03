@@ -5,19 +5,32 @@
     android:id="@+id/main_root"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#EFEBE9">
+    android:background="#101216">
 
     <LinearLayout
         android:id="@+id/containerPokedex"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        android:padding="16dp">
+        android:paddingTop="12dp">
+
+        <TextView
+            android:id="@+id/tvScreenTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="20dp"
+            android:layout_marginBottom="14dp"
+            android:text="@string/pokedex_title"
+            android:textSize="30sp"
+            android:textStyle="bold"
+            android:letterSpacing="0.01"
+            android:textColor="#F5F6F7" />
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/searchContainer"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginHorizontal="20dp"
             android:hint="@string/search_pokemon"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
             app:endIconMode="custom"
@@ -33,91 +46,154 @@
                 android:maxLines="1" />
         </com.google.android.material.textfield.TextInputLayout>
 
+        <TextView
+            android:id="@+id/tvScannerBanner"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="20dp"
+            android:layout_marginTop="10dp"
+            android:paddingHorizontal="14dp"
+            android:paddingVertical="10dp"
+            android:background="#C62828"
+            android:text="Scanner is off · tap to enable it in Accessibility settings"
+            android:textColor="#FFFFFF"
+            android:textSize="13sp"
+            android:textStyle="bold"
+            android:visibility="gone" />
+
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rvPokemonList"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="10dp"
+            android:clipToPadding="false"
+            android:paddingHorizontal="12dp"
+            android:paddingBottom="16dp"
             android:scrollbars="vertical" />
     </LinearLayout>
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/btnOpenTeam"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_margin="24dp"
+        android:src="@android:drawable/ic_menu_myplaces"
+        app:backgroundTint="#5D4037"
+        app:tint="#FFFFFF"
+        android:contentDescription="Team Builder" />
 
     <ScrollView
         android:id="@+id/containerBattle"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:fillViewport="true"
-        android:background="#EFEBE9"
-        android:padding="16dp"
+        android:background="#101216"
         android:visibility="gone">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:gravity="center_horizontal"
-            android:paddingBottom="80dp"> <androidx.cardview.widget.CardView
-            android:id="@+id/cardHeader"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp"
-            app:cardCornerRadius="24dp"
-            app:cardElevation="0dp"
-            app:cardBackgroundColor="#D7CCC8">
+            android:paddingBottom="96dp">
 
-            <LinearLayout
+            <androidx.cardview.widget.CardView
+                android:id="@+id/cardHeader"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:padding="0dp">
+                app:cardCornerRadius="0dp"
+                app:cardElevation="0dp"
+                app:cardBackgroundColor="#D7CCC8">
 
                 <LinearLayout
-                    android:baselineAligned="false"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:gravity="center_vertical"
-                    android:padding="16dp">
+                    android:orientation="vertical">
 
                     <LinearLayout
-                        android:id="@+id/navLeftContainer"
-                        android:layout_width="0dp"
+                        android:baselineAligned="false"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:gravity="start|center_vertical"
-                        android:orientation="vertical">
-                        <TextView
-                            android:layout_width="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:paddingHorizontal="12dp"
+                        android:paddingTop="20dp"
+                        android:paddingBottom="8dp">
+
+                        <FrameLayout
+                            android:id="@+id/navLeftContainer"
+                            android:layout_width="0dp"
                             android:layout_height="wrap_content"
-                            android:text="@string/leftarrow"
-                            android:textSize="18sp"
-                            android:textColor="#5D4037"
-                            android:alpha="0.5"/>
-                        <TextView
-                            android:id="@+id/tvPrevName"
-                            android:layout_width="wrap_content"
+                            android:layout_weight="1">
+                            <TextView
+                                android:id="@+id/tvArrowLeft"
+                                android:layout_width="44dp"
+                                android:layout_height="44dp"
+                                android:layout_gravity="start"
+                                android:gravity="center"
+                                android:text="@string/leftarrow"
+                                android:textSize="20sp"
+                                android:textStyle="bold"
+                                android:textColor="#5D4037" />
+                        </FrameLayout>
+
+                        <ImageView
+                            android:id="@+id/btnTeamBuilderCard"
+                            android:layout_width="44dp"
+                            android:layout_height="44dp"
+                            android:src="@android:drawable/ic_menu_myplaces"
+                            app:tint="#5D4037"
+                            android:padding="8dp"
+                            android:contentDescription="Team Builder" />
+
+                        <FrameLayout
+                            android:id="@+id/navRightContainer"
+                            android:layout_width="0dp"
                             android:layout_height="wrap_content"
-                            android:text="@string/_005"
-                            android:textSize="10sp"
-                            android:textColor="#5D4037"
-                            android:alpha="0.7"/>
+                            android:layout_weight="1">
+                            <TextView
+                                android:id="@+id/tvArrowRight"
+                                android:layout_width="44dp"
+                                android:layout_height="44dp"
+                                android:layout_gravity="end"
+                                android:gravity="center"
+                                android:text="@string/right_arrow"
+                                android:textSize="20sp"
+                                android:textStyle="bold"
+                                android:textColor="#5D4037" />
+                        </FrameLayout>
                     </LinearLayout>
 
                     <LinearLayout
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="vertical"
-                        android:gravity="center">
+                        android:gravity="center_horizontal"
+                        android:paddingHorizontal="28dp"
+                        android:paddingBottom="4dp">
 
                         <TextView
                             android:id="@+id/tvTargetId"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:background="#20000000"
+                            android:paddingHorizontal="12dp"
+                            android:paddingVertical="4dp"
                             android:text="#160"
                             android:textColor="#5D4037"
-                            android:alpha="0.6"
-                            android:textSize="12sp"
+                            android:textSize="13sp"
+                            android:letterSpacing="0.06"
+                            android:fontFamily="monospace"
                             android:textStyle="bold"
                             android:layout_marginBottom="4dp"/>
+
+                        <ImageView
+                            android:id="@+id/ivTargetSprite"
+                            android:layout_width="232dp"
+                            android:layout_height="208dp"
+                            android:scaleType="fitCenter"
+                            android:layout_marginVertical="6dp"
+                            android:contentDescription="@null" />
 
                         <TextView
                             android:id="@+id/tvTargetName"
@@ -125,72 +201,87 @@
                             android:layout_height="wrap_content"
                             android:text="@string/example_pokemon"
                             android:textColor="#3E2723"
-                            android:textSize="26sp"
+                            android:textSize="38sp"
+                            android:letterSpacing="0.005"
                             android:textStyle="bold"
                             android:gravity="center"
                             android:textAllCaps="true" />
+
+                        <LinearLayout
+                            android:id="@+id/navNameRow"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:layout_marginTop="4dp"
+                            android:gravity="center_vertical">
+
+                            <TextView
+                                android:id="@+id/tvPrevName"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:gravity="start"
+                                android:text="@string/_005"
+                                android:textSize="11sp"
+                                android:letterSpacing="0.02"
+                                android:textColor="#5D4037"
+                                android:alpha="0.65"/>
+
+                            <TextView
+                                android:id="@+id/tvNextName"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:gravity="end"
+                                android:text="@string/_007"
+                                android:textSize="11sp"
+                                android:letterSpacing="0.02"
+                                android:textColor="#5D4037"
+                                android:alpha="0.65"/>
+                        </LinearLayout>
                     </LinearLayout>
 
                     <LinearLayout
-                        android:id="@+id/navRightContainer"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:gravity="end|center_vertical"
-                        android:orientation="vertical">
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="@string/right_arrow"
-                            android:textSize="18sp"
-                            android:textColor="#5D4037"
-                            android:alpha="0.5"/>
-                        <TextView
-                            android:id="@+id/tvNextName"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="@string/_007"
-                            android:textSize="10sp"
-                            android:textColor="#5D4037"
-                            android:alpha="0.7"/>
-                    </LinearLayout>
+                        android:id="@+id/layoutTargetTypes"
+                        android:layout_width="match_parent"
+                        android:layout_height="46dp"
+                        android:orientation="horizontal"
+                        android:layout_marginTop="16dp"
+                        android:paddingHorizontal="20dp"
+                        android:paddingBottom="24dp" />
+
                 </LinearLayout>
-
-                <LinearLayout
-                    android:id="@+id/layoutTargetTypes"
-                    android:layout_width="match_parent"
-                    android:layout_height="40dp"
-                    android:orientation="horizontal"
-                    android:layout_marginTop="8dp" />
-
-            </LinearLayout>
-        </androidx.cardview.widget.CardView>
+            </androidx.cardview.widget.CardView>
 
             <androidx.cardview.widget.CardView
                 android:id="@+id/cardData"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="-20dp"
                 app:cardCornerRadius="24dp"
-                app:cardElevation="4dp"
-                app:cardBackgroundColor="#FFFFFF">
+                app:cardElevation="0dp"
+                app:cardBackgroundColor="#1B1E24">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
-                    android:padding="16dp">
+                    android:padding="24dp">
 
                     <com.google.android.material.button.MaterialButton
                         android:id="@+id/btnVariantToggle"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
+                        android:layout_height="48dp"
                         android:text="Switch Form (Alolan)"
                         android:visibility="gone"
-                        android:layout_marginBottom="12dp"
+                        android:layout_marginBottom="16dp"
                         style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                        app:cornerRadius="24dp"
                         app:strokeColor="#5D4037"
                         app:strokeWidth="2dp"
                         android:textColor="#5D4037"/>
+
+                    
 
                     <TextView
                         android:id="@+id/lblWeak"
@@ -198,16 +289,19 @@
                         android:layout_height="wrap_content"
                         android:text="@string/weak_against"
                         android:textColor="#757575"
-                        android:textSize="16sp"
-                        android:gravity="center"
-                        android:layout_marginBottom="8dp"/>
+                        android:textSize="12sp"
+                        android:letterSpacing="0.08"
+                        android:textStyle="bold"
+                        android:textAllCaps="true"
+                        android:gravity="start"
+                        android:layout_marginBottom="10dp"/>
 
                     <LinearLayout
                         android:id="@+id/gridWeak"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="vertical"
-                        android:layout_marginBottom="16dp"/>
+                        android:layout_marginBottom="24dp"/>
 
                     <TextView
                         android:id="@+id/lblResist"
@@ -215,12 +309,55 @@
                         android:layout_height="wrap_content"
                         android:text="@string/resistant_against"
                         android:textColor="#757575"
-                        android:textSize="16sp"
-                        android:gravity="center"
-                        android:layout_marginBottom="8dp"/>
+                        android:textSize="12sp"
+                        android:letterSpacing="0.08"
+                        android:textStyle="bold"
+                        android:textAllCaps="true"
+                        android:gravity="start"
+                        android:layout_marginBottom="10dp"/>
 
                     <LinearLayout
                         android:id="@+id/gridResist"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical" />
+
+                    <TextView
+                        android:id="@+id/lblStats"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Base stats"
+                        android:textColor="#757575"
+                        android:textSize="12sp"
+                        android:letterSpacing="0.08"
+                        android:textStyle="bold"
+                        android:textAllCaps="true"
+                        android:layout_marginTop="24dp"
+                        android:layout_marginBottom="10dp"/>
+
+                    <LinearLayout
+                        android:id="@+id/listStats"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:layout_marginBottom="0dp"/>
+
+                    <TextView
+                        android:id="@+id/lblCounters"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Your team vs this"
+                        android:textColor="#757575"
+                        android:textSize="12sp"
+                        android:letterSpacing="0.08"
+                        android:textStyle="bold"
+                        android:textAllCaps="true"
+                        android:layout_marginTop="24dp"
+                        android:layout_marginBottom="10dp"
+                        android:visibility="gone"/>
+
+                    <LinearLayout
+                        android:id="@+id/listCounters"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="vertical" />
@@ -229,6 +366,18 @@
 
         </LinearLayout>
     </ScrollView>
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/btnLeftFab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|start"
+        android:layout_margin="24dp"
+        android:src="@android:drawable/ic_menu_send"
+        android:visibility="gone"
+        app:backgroundTint="#8D6E63"
+        app:tint="#FFFFFF"
+        android:contentDescription="Shortcut" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/btnBackToList"
@@ -247,9 +396,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|center_horizontal"
-        android:layout_marginBottom="16dp"
-        app:cardCornerRadius="24dp"
-        app:cardElevation="8dp"
+        android:layout_marginBottom="20dp"
+        app:cardCornerRadius="28dp"
+        app:cardElevation="10dp"
         app:cardBackgroundColor="#D7CCC8"
         android:visibility="gone">
 
@@ -257,17 +406,19 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:paddingHorizontal="24dp"
-            android:paddingVertical="12dp"
+            android:paddingHorizontal="26dp"
+            android:paddingVertical="14dp"
             android:gravity="center_vertical">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/battle"
-                android:textSize="14sp"
+                android:textSize="13sp"
+                android:letterSpacing="0.04"
                 android:textStyle="bold"
-                android:textColor="#5D4037"
+                android:textColor="#FFFFFF"
+                android:alpha="0.85"
                 android:layout_marginEnd="8dp"/>
 
             <TextView
@@ -275,10 +426,206 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/charizard"
-                android:textSize="14sp"
+                android:textSize="15sp"
                 android:textStyle="bold"
                 android:textColor="#3E2723"/>
         </LinearLayout>
     </androidx.cardview.widget.CardView>
+
+    <ScrollView
+        android:id="@+id/containerTeamBuilder"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fillViewport="true"
+        android:visibility="gone"
+        android:background="#101216">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingHorizontal="20dp"
+            android:paddingTop="16dp"
+            android:paddingBottom="104dp">
+
+            <TextView
+                android:id="@+id/tvTeamGame"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Modern (Gen 6+)"
+                android:textSize="12sp"
+                android:textStyle="bold"
+                android:letterSpacing="0.08"
+                android:textAllCaps="true"
+                android:textColor="#9E9E9E" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:layout_marginBottom="4dp">
+
+                <TextView
+                    android:id="@+id/tvTeamName"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:paddingVertical="4dp"
+                    android:text="Team 1"
+                    android:textSize="28sp"
+                    android:textStyle="bold"
+                    android:maxLines="1"
+                    android:ellipsize="end"
+                    android:textColor="#F5F6F7"
+                    android:background="?attr/selectableItemBackground" />
+
+                <ImageView
+                    android:id="@+id/btnTeamShare"
+                    android:layout_width="44dp"
+                    android:layout_height="44dp"
+                    android:padding="10dp"
+                    android:src="@android:drawable/ic_menu_share"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:contentDescription="Copy or paste team" />
+
+                <ImageView
+                    android:id="@+id/btnTeamAdd"
+                    android:layout_width="44dp"
+                    android:layout_height="44dp"
+                    android:padding="10dp"
+                    android:src="@android:drawable/ic_input_add"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:contentDescription="New team" />
+
+                <ImageView
+                    android:id="@+id/btnTeamRename"
+                    android:layout_width="44dp"
+                    android:layout_height="44dp"
+                    android:padding="10dp"
+                    android:src="@android:drawable/ic_menu_edit"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:contentDescription="Rename team" />
+
+                <ImageView
+                    android:id="@+id/btnTeamDelete"
+                    android:layout_width="44dp"
+                    android:layout_height="44dp"
+                    android:padding="10dp"
+                    android:src="@android:drawable/ic_menu_delete"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:contentDescription="Delete team" />
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/tvTeamHint"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Tap the name to switch teams · tap a slot to add or view · hold a slot for options"
+                android:textSize="12sp"
+                android:textColor="#9E9E9E"
+                android:layout_marginBottom="12dp" />
+
+            <GridLayout
+                android:id="@+id/gridTeam"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:columnCount="2">
+
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/cell0"
+                    android:layout_width="0dp"
+                    android:layout_height="128dp"
+                    android:layout_columnWeight="1"
+                    android:layout_margin="6dp"
+                    app:cardBackgroundColor="#1B1E24"
+                    app:cardCornerRadius="16dp"
+                    app:cardElevation="2dp" />
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/cell1"
+                    android:layout_width="0dp"
+                    android:layout_height="128dp"
+                    android:layout_columnWeight="1"
+                    android:layout_margin="6dp"
+                    app:cardBackgroundColor="#1B1E24"
+                    app:cardCornerRadius="16dp"
+                    app:cardElevation="2dp" />
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/cell2"
+                    android:layout_width="0dp"
+                    android:layout_height="128dp"
+                    android:layout_columnWeight="1"
+                    android:layout_margin="6dp"
+                    app:cardBackgroundColor="#1B1E24"
+                    app:cardCornerRadius="16dp"
+                    app:cardElevation="2dp" />
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/cell3"
+                    android:layout_width="0dp"
+                    android:layout_height="128dp"
+                    android:layout_columnWeight="1"
+                    android:layout_margin="6dp"
+                    app:cardBackgroundColor="#1B1E24"
+                    app:cardCornerRadius="16dp"
+                    app:cardElevation="2dp" />
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/cell4"
+                    android:layout_width="0dp"
+                    android:layout_height="128dp"
+                    android:layout_columnWeight="1"
+                    android:layout_margin="6dp"
+                    app:cardBackgroundColor="#1B1E24"
+                    app:cardCornerRadius="16dp"
+                    app:cardElevation="2dp" />
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/cell5"
+                    android:layout_width="0dp"
+                    android:layout_height="128dp"
+                    android:layout_columnWeight="1"
+                    android:layout_margin="6dp"
+                    app:cardBackgroundColor="#1B1E24"
+                    app:cardCornerRadius="16dp"
+                    app:cardElevation="2dp" />
+            </GridLayout>
+
+            <TextView
+                android:id="@+id/lblTeamWeak"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Shared weaknesses (members weak)"
+                android:textColor="#757575"
+                android:textSize="12sp"
+                android:letterSpacing="0.08"
+                android:textStyle="bold"
+                android:textAllCaps="true"
+                android:layout_marginTop="20dp"
+                android:layout_marginBottom="10dp" />
+
+            <LinearLayout
+                android:id="@+id/gridTeamWeak"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical" />
+
+            <TextView
+                android:id="@+id/lblTeamGaps"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="No super-effective STAB against"
+                android:textColor="#757575"
+                android:textSize="12sp"
+                android:letterSpacing="0.08"
+                android:textStyle="bold"
+                android:textAllCaps="true"
+                android:layout_marginTop="16dp"
+                android:layout_marginBottom="10dp" />
+
+            <LinearLayout
+                android:id="@+id/gridTeamGaps"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical" />
+        </LinearLayout>
+    </ScrollView>
 
 </FrameLayout>

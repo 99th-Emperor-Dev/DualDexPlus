@@ -1,115 +1,141 @@
-# DualScreenDex
+# DualDex Plus
 
-**DualScreenDex** is a companion Pokedex app designed specifically for dual-screen Android gaming handhelds (like the Ayn Thor). It uses live OCR screen scanning to automatically detect the Pokémon currently on your screen and display their stats, weaknesses, and resistances instantly.
+**DualDex Plus** is a companion Pokédex for dual-screen Android handhelds such as the **AYN Thor**. While you play on the top screen, it reads the Pokémon you're facing and shows its types, weaknesses, resistances, base stats, and how your team matches up against it on the bottom screen.
 
----
-
-## New in v2.0
-
-* **Modular Architecture:** Complete internal refactor replacing the previous monolithic system with a cleaner, more scalable modular structure.
-* **Custom ROM Profiles:**
-  * Built-in profiles for:
-    * Vanilla Pokémon (Gen 1)
-    * Vanilla Pokémon (Gen 2–5)
-    * Vanilla Pokémon (Gen 6+)
-    * Luminescent Platinum
-    * Radical Red
-  * Create fully custom profiles by uploading your own `.csv` files:
-    * Custom Pokédex data
-    * Regional variants
-    * Type matchup logic
-    * Designed to support any ROM hack or custom game.
-* **Advanced Screen Scanning:**
-  * Choose whether to scan the **top or bottom screen**.
-  * Select scanning orientation (**left side or right side**) depending on how your game displays enemy Pokémon.
-  * Ideal for different emulator layouts and custom ROM UI designs.
+It's a fork of [DualScreenDex](https://github.com/enrique-paulino/DualScreenDex) by Enrique Paulino. **v1.0** is the first release of the fork. It installs as its own app (`io.github.dualdexplus`), so it can sit next to the original.
 
 ---
 
-## Features
+## Demo
 
-* **Live Battle Scanner:** Uses Android's AccessibilityService and Google ML Kit to scan the selected screen region for Pokémon names in real-time.
-* **Themes (introduced in v1.1):**
-  * **OLED Mode:** True black background for OLED screens.
-  * **Pokedex Red:** Classic green-tinted aesthetic with scanlines.
-  * **Pastel Magic:** Pastel gradients with floating stars.
-  * **Dynamic:** Adapts UI colours based on the detected Pokémon's type.
-* **Smart Multitasking:**
-    * **Battle Mode:** Automatically displays data for the Pokémon detected on screen (supports multi-Pokémon battles e.g. 2v2, 3v3).
-    * **Pokedex Mode:** Browse the full database manually.
-    * **"Battle Tab":** Minimises active battle data to a small tab at the bottom while you browse, allowing you to multitask without losing your place.
-* **Generation Selector:** Dynamic type system allows you to switch between logic for Gen 1, Gen 2–5, and Gen 6+ (e.g. retrofitting Fairy types back to Normal for older games).
-* **Battery Optimised:**
-    * Scanner automatically sleeps (`onPause`) when the app is backgrounded.
-    * Uses a dynamic polling rate (2000ms) to minimise CPU usage and heat.
-    * Crops image processing to the selected game window region to save resources.
- 
-* **Database Features**
-   * **Regional Variants:** Full support for **Alolan, Galarian and Hisuian** forms.
-   * **Form Switching:** A toggle button appears automatically when a Pokémon has multiple forms.
-   * **Offline Ready:** Includes a complete database of all 1,025 Pokémon.
+<video src="docs/DualDexPlus_showcase.mp4" controls muted width="700"></video>
 
----
-
-## Roadmap
-
-* [x] **Custom ROM Support:** Import `.csv` files to support ROM hacks.
-* [x] **Custom Matchup Logic:** User-defined type effectiveness charts (e.g. changing Fire to be weak against Ice).
-* [x] **v1.1:** Themes, regional variants, and improved scanning.
-* [x] **v2.0:** Modular architecture, custom ROM profiles, advanced screen scanning controls.
-* [ ] **Language Support:** Support for non-English languages that have different Pokémon names (e.g. Japanese).
-* [ ] **TTS:** Have the app read out Pokémon entries in a Pokédex-robot voice.
-
----
-
-## Demo Video
-
-<a href="https://www.youtube.com/watch?v=JMTiW8wY358">
-  <video src="https://github.com/user-attachments/assets/7e5c7c09-2865-4e57-9b8e-76198134f4fb" width="400" controls muted autoplay loop>
-  </video>
-</a>
+Recorded on a real AYN Thor bottom screen. If the player doesn't show, [download the video](docs/DualDexPlus_showcase.mp4).
 
 ---
 
 ## Screenshots
 
-| Dynamic Theme | OLED Theme | Pokemon Red Theme | Pastel Magic Theme |
-|:---:|:---:|:---:|:---:|
-| <img src="https://github.com/user-attachments/assets/098a89e0-bafb-48f0-b330-0c7fb881911e" width="200" /> | <img src="https://github.com/user-attachments/assets/7f922481-6fd7-4688-b9da-d0dc99cf9177" width="200" /> | <img src="https://github.com/user-attachments/assets/21c2bafa-c446-4ed8-93bb-4437cdc17adf" width="200" /> | <img src="https://github.com/user-attachments/assets/f5a0858e-13ab-48e0-88c7-0ef487a65850" width="200" /> |
-| <img src="https://github.com/user-attachments/assets/35895897-4248-483e-89e6-0b6a5c1dbf07" width="200" /> | <img src="https://github.com/user-attachments/assets/e16ea13b-265e-4cec-9111-a7290afd43ac" width="200" /> | <img src="https://github.com/user-attachments/assets/bb7c675f-f7b5-4631-a6f2-9dfac91a92a3" width="200" /> | <img src="https://github.com/user-attachments/assets/2e147b3d-0f34-4632-97fb-20150ed458ab" width="200" /> |
+All taken on the bottom screen of a real AYN Thor.
+
+| FireRed · scanned from the battle on the top screen | FireRed · browsing with the battle tab |
+|:---:|:---:|
+| ![FireRed scan](docs/screenshots/firered_scan_mewtwo.png) | ![FireRed](docs/screenshots/firered_raichu_scan.png) |
+| **Crystal** | **Emerald** |
+| ![Crystal](docs/screenshots/crystal_typhlosion.png) | ![Emerald](docs/screenshots/emerald_zigzagoon.png) |
+| **Violet** | **National Dex · regional forms** |
+| ![Violet](docs/screenshots/violet_floragato.png) | ![Alolan Vulpix](docs/screenshots/national_alolan_vulpix.png) |
+| **Team builder (Legends: Arceus)** | **Pokédex list (FireRed)** |
+| ![Team builder](docs/screenshots/team_builder_arceus.png) | ![List](docs/screenshots/firered_list.png) |
+| **Settings · FireRed or LeafGreen** | **Settings · Gen 1 versions and palettes** |
+| ![Versions](docs/screenshots/settings_versions.png) | ![Gen 1 palettes](docs/screenshots/settings_gen1_palettes.png) |
+
+### Gen 1 screen palettes
+
+| Game Boy | Pocket | Light |
+|:---:|:---:|:---:|
+| ![Game Boy](docs/screenshots/gen1_gameboy.png) | ![Pocket](docs/screenshots/gen1_pocket_mew.png) | ![Light](docs/screenshots/gen1_light.png) |
+| **Game Boy Color (Yellow)** | **Super Game Boy** | |
+| ![Game Boy Color](docs/screenshots/gen1_gbc_yellow.png) | ![Super Game Boy](docs/screenshots/gen1_sgb.png) | |
 
 ---
 
-## CSV Formats
-- **Pokedex CSV:** `id,name,type1,type2` [e.g. vanilla pokedex](https://github.com/enrique-paulino/DualScreenDex/blob/master/app/src/main/assets/dex/vanilla_pokedex.csv)
-- **Regional Forms CSV:** `id,region,type1,type2` [e.g. vanilla regional](https://github.com/enrique-paulino/DualScreenDex/blob/master/app/src/main/assets/dex/vanilla_regional.csv)
-- **Matchup CSV:** [Standard matchup chart](https://github.com/enrique-paulino/DualScreenDex/blob/master/app/src/main/assets/dex/vanilla_matchup.csv) 
+## What's in v1.0
+
+### Built for the bottom screen
+* **Opens on the second screen by itself.** If it's launched on the main screen of a dual-screen device, it moves to the other one so it never covers your game.
+* **Full screen,** with no status bar or navigation bar (swipe from an edge to show them briefly).
+* **Wide layout for landscape bottom screens** (Thor, Retroid Pocket Duo, RG DS):
+  * the Pokémon card and its data side by side;
+  * "Your team vs this" across the bottom.
+  * Everything fits on one screen with no scrolling. The sprite grows or shrinks to fill the card, and the badges and stats adjust to how many weaknesses a Pokémon has.
+* **Gestures, no floating buttons:**
+  * swipe left and right to go through the Pokédex, even after a search or a scan;
+  * swipe down to close a card or the team builder;
+  * when a Pokémon is detected, its name appears as a single button to jump to it.
+
+### Games
+* **Pick the game you're playing** in Settings → Games:
+  * Red / Blue / Yellow
+  * Gold / Silver / Crystal
+  * Ruby / Sapphire / Emerald
+  * FireRed / LeafGreen
+  * Let's Go Pikachu / Eevee
+  * Sword / Shield
+  * Brilliant Diamond / Shining Pearl
+  * Legends: Arceus
+  * Scarlet / Violet
+  * Legends: Z-A
+  * the latest games (National Dex)
+* **Exact version:** Gold vs Silver vs Crystal, Sword vs Shield and so on. The version changes the colours and the sprites.
+* **Each game's own Pokédex order and numbers,** for example Hisui #001 Rowlet or Johto #001 Chikorita, including DLC dexes. You can limit the list to Pokémon in that game, or show all 1025.
+* **Match dex to game:** the type chart, dex, forms and sprites all follow the selected game.
+* **Megas, Primals and regional forms** with their own types and stats, only in games where they exist.
+* **Partner Pikachu and Partner Eevee** in Let's Go, with their own stats.
+
+### Looks
+* **Themes that look like the games:** Game Boy text boxes, GBA panels, Switch-era menus. Gen 1 and Gen 2 use real 8×8 pixel text.
+* **Hardware-accurate palettes:**
+  * Gen 1 stays within 4 colours, with a choice of Game Boy, Pocket, Light, Game Boy Color (per version) and Super Game Boy palettes.
+  * Gen 2 stays within the Game Boy Color's 56 colours.
+* **Optional LCD line effect** for Game Boy, Game Boy Color and Game Boy Advance games.
+* **Sprites for every generation.** The right game's sprites, animated 3D models, or animated 2D sprites. Everything is bundled and works offline:
+  * Crystal and Emerald idle animations;
+  * animated 3D models;
+  * Black/White-style animated 2D sprites.
+* **Sprite animations toggle** in Settings, for every game at once. Turn it off for still sprites if your handheld struggles to run a game and the animations together (RG DS and other lower-powered devices).
+
+### Teams
+* **A team for every game,** with as many teams as you like: rename, delete, switch, and copy or paste in Showdown format.
+* **"Your team vs this"** on every card. Each team member shows how hard it hits and how hard it gets hit, best counter first. Tap a member to open it.
+* **Team analysis:** shared weaknesses, and types your team can't hit super-effectively.
+
+### Scanning
+* **Opens the card by itself** when a Pokémon is found. If you close it to browse, it stays closed until that battle ends, and the Pokémon's name button takes you back.
+* Works with the GBA fonts. Look-alike letters in FireRed / LeafGreen (M/W/N/H, O/D) and gender symbols stuck to the name are matched correctly.
+* **Game Language: English / Japanese.** Japanese uses ML Kit's on-device Japanese model and matches katakana names. Based on [upstream PR #4](https://github.com/enrique-paulino/DualScreenDex/pull/4).
+* From the original app:
+  * scan the top or bottom screen, left or right side;
+  * the scanner sleeps when the app is in the background.
 
 ---
 
 ## Installation
 
-1. Download the latest APK from the [Releases](../../releases) page.
-2. Install the APK on your Android device.
-3. You will be prompted to enable **DualScreenDex** in your Android **Accessibility Settings**.
-    * *Note: This permission is used strictly to read the screen content for local text recognition. No images are saved or transmitted off-device.*
+1. Download the APK from the [Releases](../../releases) page and install it.
+2. Turn on **DualDex Plus** in Android's **Accessibility** settings (the app shows a banner that takes you there).
+   * This permission is only used to read the game screen for on-device text recognition. No images are saved or sent anywhere, and the app has no internet permission.
+3. Open Settings → Games and pick the game you're playing.
 
 ---
 
-## Tech Stack
+## Made with Claude Code
 
-* **Language:** Kotlin
-* **UI:** XML Layouts / Material Design
-* **OCR:** Google ML Kit (On-Device Text Recognition)
-* **Database:** SQLite (Pre-populated asset)
-* **Architecture (v2.0):** Modular structure using `AccessibilityService` and Global `BroadcastReceiver`
+This fork was built with **[Claude Code](https://claude.com/claude-code)**, Anthropic's AI coding agent, working with the project owner. Claude Code did the following:
+* wrote the features above;
+* tested layouts on emulators and on a real AYN Thor;
+* recorded the demo.
 
 ---
+
+## Credits and assets
+
+* Original app: [DualScreenDex](https://github.com/enrique-paulino/DualScreenDex) by Enrique Paulino (MIT).
+* Japanese OCR: [upstream PR #4](https://github.com/enrique-paulino/DualScreenDex/pull/4).
+* Pokédex data, base stats, game dexes and 3D renders: [pokemondb.net](https://pokemondb.net).
+* Animated 3D models, Black/White-style 2D sprites and their animations: the community sprite collection hosted by [Pokémon Showdown](https://play.pokemonshowdown.com/sprites/).
+* Super Game Boy palette values: the [pret/pokered](https://github.com/pret/pokered) disassembly.
+* Classic game sprites (Gen 1–5) and box icons: community sprite packs.
+* Pixel font: [Press Start 2P](https://fonts.google.com/specimen/Press+Start+2P) by CodeMan38, SIL Open Font License (see `app/src/main/assets/licenses/`).
+
+## Tech stack
+
+* Kotlin, XML layouts, Material Design
+* Google ML Kit on-device text recognition (Latin + Japanese)
+* AccessibilityService screen capture and a broadcast receiver
 
 ## License
 
-This project is licensed under the MIT License – see the [LICENSE](LICENSE) file for details.
+MIT, see [LICENSE](LICENSE).
 
----
-
-*Disclaimer: DualScreenDex is an unofficial, free fan-made app and is NOT affiliated, endorsed, or supported by Nintendo, Game Freak, or The Pokémon Company in any way. Pokémon and Pokémon character names are trademarks of Nintendo.*
+*DualDex Plus is an unofficial, free fan project. It is not affiliated with, endorsed or supported by Nintendo, Game Freak, Creatures or The Pokémon Company. Pokémon names, sprites and related media are trademarks and copyrights of their respective owners.*

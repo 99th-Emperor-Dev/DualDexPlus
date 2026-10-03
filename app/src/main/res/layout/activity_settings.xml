@@ -23,39 +23,261 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:padding="24dp">
+            android:padding="20dp">
+
+            <!-- top toggle: the selected game drives the dex -->
+            <LinearLayout
+                android:id="@+id/boxMatchDex"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:padding="16dp"
+                android:layout_marginBottom="24dp">
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/lblMatchTitle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Match dex to game"
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/lblMatchDesc"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="2dp"
+                        android:text="The game you pick below sets the type chart, Pokédex, forms and sprites."
+                        android:textSize="12sp" />
+                </LinearLayout>
+
+                <com.google.android.material.switchmaterial.SwitchMaterial
+                    android:id="@+id/swMatchDex"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="12dp" />
+            </LinearLayout>
 
             <TextView
-                android:id="@+id/lblProfileTitle"
+                android:id="@+id/lblThemeTitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Game Profiles"
+                android:text="Games"
                 android:textStyle="bold"
                 android:textSize="18sp"
-                android:layout_marginBottom="8dp"/>
+                android:layout_marginBottom="12dp"/>
 
-            <TextView
+            <LinearLayout
+                android:id="@+id/themeGrid"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Select the game version or ROM hack you are playing."
-                android:textSize="14sp"
-                android:layout_marginBottom="16dp"/>
+                android:orientation="vertical" />
 
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/btnCreateProfile"
-                android:layout_width="match_parent"
-                android:layout_height="60dp"
-                android:text="+ Create New Profile"
-                android:textSize="16sp"
-                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-                android:layout_marginBottom="8dp"/>
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/rvProfiles"
+            <!-- options for the selected game -->
+            <LinearLayout
+                android:id="@+id/gameOptions"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:nestedScrollingEnabled="false"
-                android:layout_marginBottom="32dp"/>
+                android:orientation="vertical"
+                android:padding="16dp"
+                android:layout_marginTop="12dp"
+                android:layout_marginBottom="28dp">
+
+                <TextView
+                    android:id="@+id/lblVersion"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Version I'm playing"
+                    android:textSize="13sp"
+                    android:textStyle="bold"
+                    android:layout_marginBottom="8dp" />
+
+                <LinearLayout
+                    android:id="@+id/versionRow"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical" />
+
+                <LinearLayout
+                    android:id="@+id/rowGameDex"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:layout_marginTop="12dp">
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:id="@+id/lblGameDex"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Only Pokémon in this game"
+                            android:textSize="14sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:id="@+id/lblGameDexDesc"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Off shows the full National Dex (1025)."
+                            android:textSize="12sp" />
+                    </LinearLayout>
+
+                    <com.google.android.material.switchmaterial.SwitchMaterial
+                        android:id="@+id/swGameDex"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="12dp" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/rowUse2D"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:layout_marginTop="12dp">
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:id="@+id/lblUse2D"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Use 2D sprites"
+                            android:textSize="14sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:id="@+id/lblUse2DDesc"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Pixel sprites instead of 3D models."
+                            android:textSize="12sp" />
+                    </LinearLayout>
+
+                    <com.google.android.material.switchmaterial.SwitchMaterial
+                        android:id="@+id/swUse2D"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="12dp" />
+                </LinearLayout>
+
+
+                <TextView
+                    android:id="@+id/lblPalette"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="14dp"
+                    android:layout_marginBottom="8dp"
+                    android:text="Screen palette"
+                    android:textSize="13sp"
+                    android:textStyle="bold" />
+
+                <LinearLayout
+                    android:id="@+id/paletteRow"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical" />
+
+                <LinearLayout
+                    android:id="@+id/rowLcd"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:layout_marginTop="12dp">
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:id="@+id/lblLcd"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="LCD screen effect"
+                            android:textSize="14sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:id="@+id/lblLcdDesc"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Pixel grid like the handheld's screen."
+                            android:textSize="12sp" />
+                    </LinearLayout>
+
+                    <com.google.android.material.switchmaterial.SwitchMaterial
+                        android:id="@+id/swLcd"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="12dp" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/displayOptions"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="16dp"
+                android:layout_marginBottom="20dp">
+                <LinearLayout
+                    android:id="@+id/rowAnimations"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:layout_marginTop="0dp">
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:id="@+id/lblAnimations"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Sprite animations"
+                            android:textSize="14sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:id="@+id/lblAnimationsDesc"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Turn off for still sprites if the game on the other screen slows down."
+                            android:textSize="12sp" />
+                    </LinearLayout>
+
+                    <com.google.android.material.switchmaterial.SwitchMaterial
+                        android:id="@+id/swAnimations"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="12dp" />
+                </LinearLayout>
+            </LinearLayout>
 
             <TextView
                 android:id="@+id/lblScannerTitle"
@@ -64,7 +286,6 @@
                 android:text="Scanner Calibration"
                 android:textSize="18sp"
                 android:textStyle="bold"
-                android:layout_marginTop="0dp"
                 android:layout_marginBottom="8dp"/>
 
             <com.google.android.material.button.MaterialButton
@@ -83,110 +304,58 @@
                 android:text="Pokemon Aligned: LEFT"
                 android:textSize="16sp"
                 style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-                android:layout_marginBottom="32dp"/>
+                android:layout_marginBottom="8dp"/>
 
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnScanLanguage"
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:text="Game Language: English"
+                android:textSize="16sp"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                android:layout_marginBottom="28dp"/>
+
+            <!-- dex version: collapsed by default -->
             <TextView
-                android:id="@+id/lblThemeTitle"
-                android:layout_width="wrap_content"
+                android:id="@+id/lblProfileTitle"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="App Theme"
+                android:paddingVertical="8dp"
+                android:text="Dex Version ▾"
                 android:textStyle="bold"
                 android:textSize="18sp"
-                android:layout_marginBottom="16dp"/>
+                android:background="?attr/selectableItemBackground"/>
 
             <LinearLayout
+                android:id="@+id/dexVersionBody"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_marginBottom="8dp">
+                android:orientation="vertical"
+                android:visibility="gone">
 
-                <com.google.android.material.card.MaterialCardView
-                    android:id="@+id/cardThemeDynamic"
-                    android:layout_width="0dp"
-                    android:layout_height="100dp"
-                    android:layout_weight="1"
-                    android:layout_marginEnd="8dp"
-                    app:cardCornerRadius="16dp"
-                    app:strokeWidth="2dp"
-                    app:strokeColor="#E0E0E0"
-                    app:cardElevation="0dp">
-                    <TextView
-                        android:id="@+id/txtThemeDynamic"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Dynamic"
-                        android:layout_gravity="center"
-                        android:textStyle="bold"/>
-                </com.google.android.material.card.MaterialCardView>
+                <TextView
+                    android:id="@+id/lblProfileDesc"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Pick the type chart and Pokédex by hand."
+                    android:textSize="14sp"
+                    android:layout_marginBottom="12dp"/>
 
-                <com.google.android.material.card.MaterialCardView
-                    android:id="@+id/cardThemeOled"
-                    android:layout_width="0dp"
-                    android:layout_height="100dp"
-                    android:layout_weight="1"
-                    android:layout_marginStart="8dp"
-                    app:cardBackgroundColor="#000000"
-                    app:cardCornerRadius="16dp"
-                    app:strokeWidth="2dp"
-                    app:strokeColor="#333333"
-                    app:cardElevation="0dp">
-                    <TextView
-                        android:id="@+id/txtThemeOled"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="OLED"
-                        android:textColor="#FFFFFF"
-                        android:layout_gravity="center"
-                        android:textStyle="bold"/>
-                </com.google.android.material.card.MaterialCardView>
-            </LinearLayout>
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnCreateProfile"
+                    android:layout_width="match_parent"
+                    android:layout_height="60dp"
+                    android:text="+ Create New Profile"
+                    android:textSize="16sp"
+                    style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                    android:layout_marginBottom="8dp"/>
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
-
-                <com.google.android.material.card.MaterialCardView
-                    android:id="@+id/cardThemeRed"
-                    android:layout_width="0dp"
-                    android:layout_height="100dp"
-                    android:layout_weight="1"
-                    android:layout_marginEnd="8dp"
-                    app:cardBackgroundColor="#DC0A2D"
-                    app:cardCornerRadius="0dp"
-                    app:strokeWidth="2dp"
-                    app:strokeColor="#8B0000"
-                    app:cardElevation="0dp">
-                    <TextView
-                        android:id="@+id/txtThemeRed"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Pokedex Red"
-                        android:textColor="#FFFFFF"
-                        android:layout_gravity="center"
-                        android:textStyle="bold"/>
-                </com.google.android.material.card.MaterialCardView>
-
-                <com.google.android.material.card.MaterialCardView
-                    android:id="@+id/cardThemeMagical"
-                    android:layout_width="0dp"
-                    android:layout_height="100dp"
-                    android:layout_weight="1"
-                    android:layout_marginStart="8dp"
-                    app:cardBackgroundColor="#F3E5F5"
-                    app:cardCornerRadius="16dp"
-                    app:strokeWidth="2dp"
-                    app:strokeColor="#E1BEE7"
-                    app:cardElevation="0dp">
-                    <TextView
-                        android:id="@+id/txtThemeMagical"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Pastel Magic"
-                        android:textColor="#4A148C"
-                        android:layout_gravity="center"
-                        android:textStyle="bold"/>
-                </com.google.android.material.card.MaterialCardView>
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rvProfiles"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:nestedScrollingEnabled="false"
+                    android:layout_marginBottom="24dp"/>
             </LinearLayout>
 
         </LinearLayout>
