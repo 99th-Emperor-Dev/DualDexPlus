@@ -364,8 +364,8 @@ class SettingsActivity : AppCompatActivity() {
     }
 
     /**
-     * "Sprites" row, only while "Match dex to game" is off: lets a custom dex (Radical Red, a profile...)
-     * use any game's sprites, or 3D models, instead of whatever its generation implies.
+     * "Sprites" row, in every game: keep the game's theme and dex but show another game's sprites
+     * (or the 3D models), animated where any animation exists.
      */
     private fun refreshSpriteSetRow(box: LinearLayout, matching: Boolean) {
         val d = density
@@ -381,15 +381,15 @@ class SettingsActivity : AppCompatActivity() {
                 LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT).apply { topMargin = (12 * d).toInt() })
         }
         row.removeAllViews()
-        row.visibility = if (matching) View.GONE else View.VISIBLE
-        if (matching) return
+        row.visibility = View.VISIBLE
+        // shown in every game: keep the game's look but use another game's sprites
         val current = GameCatalog.spriteSets.firstOrNull { it.first == GameCatalog.spriteSet(this) } ?: GameCatalog.spriteSets[0]
         val labels = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL }
         labels.addView(TextView(this).apply {
             text = "Sprites"; textSize = 14f; setTypeface(null, android.graphics.Typeface.BOLD); setTextColor(theme.listTextColor)
         })
         labels.addView(TextView(this).apply {
-            text = "Use any game's sprites with your own dex."; textSize = 12f; setTextColor(theme.listTextColor)
+            text = "Use another game's sprites, animated."; textSize = 12f; setTextColor(theme.listTextColor)
         })
         row.addView(labels, LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f))
         row.addView(MaterialButton(this, null, com.google.android.material.R.attr.materialButtonOutlinedStyle).apply {

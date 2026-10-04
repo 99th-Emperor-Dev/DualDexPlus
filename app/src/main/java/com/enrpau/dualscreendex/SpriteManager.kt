@@ -81,26 +81,35 @@ object SpriteManager {
         // no idle animation for this sprite: give big sprites a gentle idle motion instead
         if (res != null && !icon && animate) startIdle(view, smooth = res.folder == MODERN)
         view.setTag(R.id.tag_anim_key, null)
-        if (pokemon != null && !icon && res != null && animate) loadOnlineAnimation(view, pokemon)
+        // the game lacked this pokemon (Lillipup in Gold): its stand-in sprite still animates
+        if (pokemon != null && !icon && res != null && animate)
+            loadOnlineAnimation(view, pokemon, gapFill = res.folder != resolveFolder(view.context))
     }
 
     /** Which downloadable animation set applies right now: 3d models, or 2d sprites when "Use 2D" is on. */
-    private fun onlineKind(context: Context): AnimatedSprites.Kind? {
+    private fun onlineKind(context: Context, gapFill: Boolean = false): AnimatedSprites.Kind? =
+        onlineKindFor(context) ?: if (gapFill) AnimatedSprites.Kind.PIXEL_2D else null
+
+    private fun onlineKindFor(context: Context): AnimatedSprites.Kind? {
         val catalog = com.enrpau.dualscreendex.data.GameCatalog
         val folder = catalog.currentVersion(context)?.spriteFolder
         val custom = catalog.customSpriteSet(context)
+        // hand-picked set: 3D models stay 3D, every pixel set fills its gaps with animated 2D sprites
+        // (game boy palettes can't show smooth 3D, but pixel frames get recoloured into the palette)
+        if (custom != null) return if (custom == MODERN && !catalog.isUse2D(context) && !ThemeManager.isLimitedPalette)
+            AnimatedSprites.Kind.MODEL_3D else AnimatedSprites.Kind.PIXEL_2D
+        if (ThemeManager.isLimitedPalette) return null
         val modern = if (catalog.isMatchDex(context)) folder == MODERN
-            else if (custom != null) custom == MODERN || custom == "bw"
             else RomManager.currentProfile.baseMechanics == com.enrpau.dualscreendex.data.RomProfile.Mechanics.GEN_6_PLUS
-        if (!modern || ThemeManager.isLimitedPalette) return null
-        val twoD = catalog.isUse2D(context) || custom == "bw" ||
+        if (!modern) return null
+        val twoD = catalog.isUse2D(context) ||
             (catalog.currentVersion(context)?.always2D == true && catalog.isMatchDex(context))
         return if (twoD) AnimatedSprites.Kind.PIXEL_2D else AnimatedSprites.Kind.MODEL_3D
     }
 
-    private fun loadOnlineAnimation(view: ImageView, pokemon: Pokemon) {
+    private fun loadOnlineAnimation(view: ImageView, pokemon: Pokemon, gapFill: Boolean = false) {
         val context = view.context
-        val kind = onlineKind(context) ?: return
+        val kind = onlineKind(context, gapFill) ?: return
         val key = "${kind.dir}|${pokemon.id}|${pokemon.variantLabel.orEmpty()}"
         view.setTag(R.id.tag_anim_key, key)
         val path = AnimatedSprites.assetPath(context, kind, pokemon.id, pokemon.variantLabel) ?: return
@@ -117,7 +126,8 @@ object SpriteManager {
                     AnimationDrawable().apply {
                         isOneShot = false
                         fr.bitmaps.forEachIndexed { i, b ->
-                            addFrame(BitmapDrawable(context.resources, b).apply { setFilterBitmap(false) }, fr.durations[i])
+                            val frame = if (needsPalette("gen5ani")) paletteCopy(b) else b
+                            addFrame(BitmapDrawable(context.resources, frame).apply { setFilterBitmap(false) }, fr.durations[i])
                         }
                     }
                 }
@@ -229,7 +239,7 @@ object SpriteManager {
     private fun resolveFolder(context: Context): String {
         val catalog = com.enrpau.dualscreendex.data.GameCatalog
         val version = catalog.currentVersion(context)
-        // a sprite set picked by hand (only offered when the dex isn't matched to a game)
+        // a sprite set picked by hand in settings beats the game's own
         catalog.customSpriteSet(context)?.let { set ->
             return if (set == MODERN && catalog.isUse2D(context)) "bw" else set
         }
@@ -278,14 +288,16 @@ object SpriteManager {
         if (pokemon.variantLabel != null) return null // the animated sets only have base forms
         val catalog = com.enrpau.dualscreendex.data.GameCatalog
         if (ThemeManager.nativeColorSprites) return null   // yellow's pokemon didn't animate
-        // custom dex: the chosen sprite set brings its own idle animations (Crystal, Emerald)
-        val folder = if (!catalog.isMatchDex(context)) when (catalog.customSpriteSet(context)) {
-            "crystal" -> "crystal_anim"
-            "emerald" -> "emerald_anim"
+        // a hand-picked sprite set animates every pokemon: its own era's idle animations first, then the
+        // other pixel set (Crystal covers #1-251, Emerald #1-386); newer ones get animated 2D sprites later
+        val custom = catalog.customSpriteSet(context)
+        val chain = if (custom != null) when (custom) {
+            "rb", "yellow", "gold", "silver", "crystal" -> listOf("crystal_anim", "emerald_anim")
+            "rs", "emerald", "frlg" -> listOf("emerald_anim", "crystal_anim")
             else -> return null
-        } else catalog.currentVersion(context)?.animFolder ?: return null
+        } else listOfNotNull(catalog.currentVersion(context)?.animFolder)
         val name = "${pokemon.id}.gif"
-        if (name !in folderIndex(context, folder)) return null
+        val folder = chain.firstOrNull { name in folderIndex(context, it) } ?: return null
         val key = "$folder/$name"
         val frames = animCache.get(key) ?: decodeGif(context, key, cleanEdges = folder in opaqueAnimFolders)
             ?.also { animCache.put(key, it) } ?: return null

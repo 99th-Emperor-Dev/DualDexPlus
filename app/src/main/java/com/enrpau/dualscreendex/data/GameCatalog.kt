@@ -195,7 +195,7 @@ object GameCatalog {
      * "auto" keeps the old behaviour (sprites follow the dex's generation).
      */
     val spriteSets = listOf(
-        "auto" to "Automatic (follow the dex)",
+        "auto" to "Automatic (the game's own)",
         "rb" to "Red / Blue", "yellow" to "Yellow",
         "gold" to "Gold", "silver" to "Silver", "crystal" to "Crystal",
         "rs" to "Ruby / Sapphire", "emerald" to "Emerald", "frlg" to "FireRed / LeafGreen",
@@ -205,8 +205,7 @@ object GameCatalog {
     fun spriteSet(context: Context) = prefs(context).getString("SPRITE_SET", "auto") ?: "auto"
     fun setSpriteSet(context: Context, set: String) = prefs(context).edit { putString("SPRITE_SET", set) }
     /** The custom set in effect right now, or null when sprites follow the game / dex. */
-    fun customSpriteSet(context: Context): String? =
-        if (isMatchDex(context)) null else spriteSet(context).takeIf { it != "auto" }
+    fun customSpriteSet(context: Context): String? = spriteSet(context).takeIf { it != "auto" }
 
     /** Sprite animations (idle animations, animated models, idle bob). Off = still sprites, lighter on the GPU. */
     fun isAnimationsOn(context: Context) = prefs(context).getBoolean("SPRITE_ANIMATIONS", true)
