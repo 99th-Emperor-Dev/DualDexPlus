@@ -94,6 +94,7 @@ object ThemeManager {
         if (base.monochrome) dmg = com.enrpau.dualscreendex.data.GameCatalog.gbShades(context)
         nativeColorSprites = base.monochrome && com.enrpau.dualscreendex.data.GameCatalog.isYellowOnGbc(context)
         currentTheme = withVersion(context, base)
+        dithering = com.enrpau.dualscreendex.data.GameCatalog.isDither(context)
     }
 
     /** Repaints the game boy theme in one 4-shade palette: p[0] darkest .. p[3] lightest. */
@@ -431,15 +432,27 @@ object ThemeManager {
         val h = src.height
         val px = IntArray(w * h)
         src.getPixels(px, 0, w, 0, 0, w, h)
-        val memo = HashMap<Int, Int>()
+        val memo = HashMap<Long, Int>()
+        // optional ordered dithering (the checkerboard blends GBC-style rom hacks use): each pixel is nudged
+        // by a 4x4 Bayer pattern before snapping, so in-between colours become a fine mix of two palette colours
+        val spread = if (!dithering) 0 else if (t.monochrome) 48 else 28
         for (i in px.indices) {
             val p = px[i]
-            px[i] = if (Color.alpha(p) < 128) 0 else memo.getOrPut(p or 0xFF000000.toInt()) {
-                if (t.monochrome) dmgSpriteShade(p or 0xFF000000.toInt()) else gbc(p or 0xFF000000.toInt())
+            if (Color.alpha(p) < 128) { px[i] = 0; continue }
+            val bias = if (spread == 0) 0 else (BAYER[(i / w % 4) * 4 + i % w % 4] * spread / 16) - spread / 2
+            val key = ((p or 0xFF000000.toInt()).toLong() shl 8) or (bias + 128).toLong()
+            px[i] = memo.getOrPut(key) {
+                val c = if (bias == 0) p or 0xFF000000.toInt() else Color.rgb(
+                    (Color.red(p) + bias).coerceIn(0, 255), (Color.green(p) + bias).coerceIn(0, 255), (Color.blue(p) + bias).coerceIn(0, 255))
+                if (t.monochrome) dmgSpriteShade(c) else gbc(c)
             }
         }
         return Bitmap.createBitmap(px, w, h, Bitmap.Config.ARGB_8888)
     }
+
+    /** "Dithering" setting, read by [quantizeBitmap]. */
+    var dithering = false
+    private val BAYER = intArrayOf(0, 8, 2, 10, 12, 4, 14, 6, 3, 11, 1, 9, 15, 7, 13, 5)
 
     /**
      * A rounded rectangle with hard (non-smoothed) edges, so limited-palette themes don't gain in-between colours.

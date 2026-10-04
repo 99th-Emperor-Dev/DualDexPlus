@@ -81,6 +81,8 @@ All taken on the bottom screen of a real AYN Thor.
   * Gen 1 stays within 4 colours, with a choice of Game Boy, Pocket, Light, Game Boy Color (per version) and Super Game Boy palettes.
   * Gen 2 stays within the Game Boy Color's 56 colours.
 * **Optional LCD line effect** for Game Boy, Game Boy Color and Game Boy Advance games.
+* **Dithering** (Game Boy / Game Boy Color palettes): checkerboard colour blends on the sprites, like GBC-style ROM hacks. It's a filter, so it adds nothing to the app size.
+* **Always pixel art in retro themes:** newer Pokémon show as animated pixel sprites, never smooth 3D renders.
 * **Sprites for every generation.** The right game's sprites, animated 3D models, or animated 2D sprites. Everything is bundled and works offline:
   * Crystal and Emerald idle animations;
   * animated 3D models;

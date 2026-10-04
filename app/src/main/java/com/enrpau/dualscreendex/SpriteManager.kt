@@ -98,10 +98,11 @@ object SpriteManager {
         // (game boy palettes can't show smooth 3D, but pixel frames get recoloured into the palette)
         if (custom != null) return if (custom == MODERN && !catalog.isUse2D(context) && !ThemeManager.isLimitedPalette)
             AnimatedSprites.Kind.MODEL_3D else AnimatedSprites.Kind.PIXEL_2D
-        if (ThemeManager.isLimitedPalette) return null
         val modern = if (catalog.isMatchDex(context)) folder == MODERN
             else RomManager.currentProfile.baseMechanics == com.enrpau.dualscreendex.data.RomProfile.Mechanics.GEN_6_PLUS
         if (!modern) return null
+        // game boy palettes: animated pixel sprites, recoloured into the palette (never smooth 3D)
+        if (ThemeManager.isLimitedPalette) return AnimatedSprites.Kind.PIXEL_2D
         val twoD = catalog.isUse2D(context) ||
             (catalog.currentVersion(context)?.always2D == true && catalog.isMatchDex(context))
         return if (twoD) AnimatedSprites.Kind.PIXEL_2D else AnimatedSprites.Kind.MODEL_3D
@@ -252,7 +253,8 @@ object SpriteManager {
         }
         // "Use 2D sprites": black/white pixel sprites where they exist
         val twoD = catalog.isUse2D(context) || (version?.always2D == true && catalog.isMatchDex(context))
-        return if (folder == MODERN && twoD) "bw" else folder
+        // retro-palette themes stay pixel art: smooth 3D renders turn into the black/white-style sprites
+        return if (folder == MODERN && (twoD || ThemeManager.isLimitedPalette)) "bw" else folder
     }
 
     // sprites recoloured into the theme's hardware palette, cached per theme
@@ -272,7 +274,7 @@ object SpriteManager {
 
     private fun paletteCopy(src: Bitmap): Bitmap {
         if (!ThemeManager.isLimitedPalette) return src
-        val key = ThemeManager.currentTheme.id + "/" + System.identityHashCode(src)
+        val key = ThemeManager.currentTheme.id + "/" + ThemeManager.dithering + "/" + System.identityHashCode(src)
         return paletteCache.get(key) ?: ThemeManager.quantizeBitmap(src).also { paletteCache.put(key, it) }
     }
 

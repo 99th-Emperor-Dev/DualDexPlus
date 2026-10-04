@@ -207,6 +207,10 @@ object GameCatalog {
     /** The custom set in effect right now, or null when sprites follow the game / dex. */
     fun customSpriteSet(context: Context): String? = spriteSet(context).takeIf { it != "auto" }
 
+    /** Checkerboard dithering when sprites are snapped to the Game Boy / Game Boy Color palettes. */
+    fun isDither(context: Context) = prefs(context).getBoolean("DITHER", false)
+    fun setDither(context: Context, on: Boolean) = prefs(context).edit { putBoolean("DITHER", on) }
+
     /** Sprite animations (idle animations, animated models, idle bob). Off = still sprites, lighter on the GPU. */
     fun isAnimationsOn(context: Context) = prefs(context).getBoolean("SPRITE_ANIMATIONS", true)
     fun setAnimationsOn(context: Context, on: Boolean) = prefs(context).edit { putBoolean("SPRITE_ANIMATIONS", on) }

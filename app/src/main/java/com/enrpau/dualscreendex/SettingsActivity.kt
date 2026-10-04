@@ -306,6 +306,7 @@ class SettingsActivity : AppCompatActivity() {
 
         // custom dex: pick any game's sprites (the dex no longer decides the look)
         refreshSpriteSetRow(box, matching)
+        refreshDitherRow(box)
 
         // gen 1: screen palette (game boy green, pocket, light, game boy color, super game boy)
         val paletteRow = findViewById<LinearLayout>(R.id.paletteRow)
@@ -410,6 +411,43 @@ class SettingsActivity : AppCompatActivity() {
         }, LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT).apply {
             marginStart = (12 * d).toInt()
         })
+    }
+
+    /**
+     * "Dithering" switch for the Game Boy / Game Boy Color palettes: sprites snapped to the palette get the
+     * checkerboard colour blends of GBC-style rom hacks. A filter at runtime, so no extra files.
+     */
+    private fun refreshDitherRow(box: LinearLayout) {
+        val d = density
+        val theme = ThemeManager.currentTheme
+        val row = box.findViewWithTag<LinearLayout>("ditherRow") ?: LinearLayout(this).apply {
+            tag = "ditherRow"
+            orientation = LinearLayout.HORIZONTAL
+            gravity = android.view.Gravity.CENTER_VERTICAL
+            val anchor = box.findViewWithTag<View>("spriteSetRow")
+            box.addView(this, box.indexOfChild(anchor) + 1, LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT).apply { topMargin = (12 * d).toInt() })
+        }
+        row.removeAllViews()
+        row.visibility = if (ThemeManager.isLimitedPalette) View.VISIBLE else View.GONE
+        if (!ThemeManager.isLimitedPalette) return
+        val labels = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL }
+        labels.addView(TextView(this).apply {
+            text = "Dithering"; textSize = 14f; setTypeface(null, android.graphics.Typeface.BOLD); setTextColor(theme.listTextColor)
+        })
+        labels.addView(TextView(this).apply {
+            text = "Checkerboard colour blends, like GBC-style rom hacks."; textSize = 12f; setTextColor(theme.listTextColor)
+        })
+        row.addView(labels, LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f))
+        val sw = com.google.android.material.switchmaterial.SwitchMaterial(this).apply {
+            isChecked = GameCatalog.isDither(this@SettingsActivity)
+            setOnCheckedChangeListener { _, on ->
+                GameCatalog.setDither(this@SettingsActivity, on)
+                ThemeManager.dithering = on
+            }
+        }
+        row.addView(sw)
+        row.setOnClickListener { sw.toggle() }
     }
 
     /** Settings buttons look like the game's windows. */
