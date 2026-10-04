@@ -51,7 +51,7 @@ Litten is opened from the team strip; the **BATTLE Lillipup** button jumps back 
 
 <img src="docs/screenshots/v1.1/litten_to_opponent.gif" alt="Litten, then back to the opponent" width="360">
 
-*Recorded on an AYN Thor. Full video: [DualDexPlus-v1.1-demo.mp4](https://github.com/99th-Emperor-Dev/DualDexPlus/releases/download/v1.1/DualDexPlus-v1.1-demo.mp4)*
+*Recorded on an AYN Thor.*
 
 The custom game's settings, with the game it matches:
 
