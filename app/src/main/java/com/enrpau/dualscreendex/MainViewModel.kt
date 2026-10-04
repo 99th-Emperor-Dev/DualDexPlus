@@ -49,6 +49,8 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
 
     // attacking type -> number of team members weak to it (only shared weaknesses)
     val teamWeaknesses = MutableLiveData<List<MainActivity.MatchupData>>()
+    // declared up here: the team (and its suggestions) is loaded while the view model is still being built
+    val teamSuggestions = MutableLiveData<List<Suggestion>>(emptyList())
     // types that none of the team's STAB types hit super-effectively
     val teamCoverageGaps = MutableLiveData<List<PokemonType>>()
 
@@ -505,7 +507,6 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
 
     /** A teammate idea: what it covers for the current team. */
     data class Suggestion(val pokemon: Pokemon, val resists: List<PokemonType>, val hits: List<PokemonType>)
-    val teamSuggestions = MutableLiveData<List<Suggestion>>(emptyList())
 
     /**
      * Pokemon from this game's dex that patch the team's holes: they resist the types several members

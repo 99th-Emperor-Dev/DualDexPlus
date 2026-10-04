@@ -374,7 +374,10 @@ class SettingsActivity : AppCompatActivity() {
             tag = "spriteSetRow"
             orientation = LinearLayout.HORIZONTAL
             gravity = android.view.Gravity.CENTER_VERTICAL
-            box.addView(this, box.indexOfChild(findViewById(R.id.rowGameDex)) + 1, LinearLayout.LayoutParams(
+            // right under "Only Pokémon in ..." (its row may sit inside a wrapper, so find the box's child)
+            var anchor: View = this@SettingsActivity.findViewById(R.id.rowGameDex)
+            while (anchor.parent !== box && anchor.parent is View) anchor = anchor.parent as View
+            box.addView(this, box.indexOfChild(anchor) + 1, LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT).apply { topMargin = (12 * d).toInt() })
         }
         row.removeAllViews()
