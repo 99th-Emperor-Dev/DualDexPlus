@@ -500,6 +500,45 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
         teamCoverageGaps.value = allTypes.filter { defender ->
             stab.none { atk -> TypeMatchup.getMultiplier(atk, defender, getApplication()) > 1.0 }
         }
+        calculateSuggestions(members)
+    }
+
+    /** A teammate idea: what it covers for the current team. */
+    data class Suggestion(val pokemon: Pokemon, val resists: List<PokemonType>, val hits: List<PokemonType>)
+    val teamSuggestions = MutableLiveData<List<Suggestion>>(emptyList())
+
+    /**
+     * Pokemon from this game's dex that patch the team's holes: they resist the types several members
+     * are weak to, and their own types hit what the team can't hit super-effectively.
+     */
+    private fun calculateSuggestions(members: List<Pokemon>) {
+        val weaknesses = teamWeaknesses.value.orEmpty().map { it.type }
+        val gaps = teamCoverageGaps.value.orEmpty()
+        if (members.size >= 6 || (weaknesses.isEmpty() && gaps.isEmpty())) {
+            teamSuggestions.value = emptyList(); return
+        }
+        val taken = members.map { it.id }.toSet()
+        teamSuggestions.value = repository.getAllPokemon().asSequence()
+            .filter { it.id !in taken && it.variantLabel?.let { v -> v.startsWith("Mega") || v.startsWith("Primal") } != true }
+            .map { c ->
+                val resists = weaknesses.filter { effectiveness(it, c) < 1.0 }
+                val weakToo = weaknesses.count { effectiveness(it, c) > 1.0 }
+                val hits = gaps.filter { g -> typesOf(c).any { TypeMatchup.getMultiplier(it, g, getApplication()) > 1.0 } }
+                val score = resists.size * 2 + hits.size - weakToo * 2
+                Triple(Suggestion(c, resists, hits), score,
+                    com.enrpau.dualscreendex.data.BaseStats.get(getApplication(), c.id, c.variantLabel)?.total ?: 0)
+            }
+            .filter { it.second > 0 }
+            // best fit first, stronger pokemon break ties; one entry per species
+            .sortedWith(compareByDescending<Triple<Suggestion, Int, Int>> { it.second }.thenByDescending { it.third })
+            .distinctBy { it.first.pokemon.id }
+            .take(6).map { it.first }.toList()
+    }
+
+    /** "+ Add" on a suggestion: first empty slot. */
+    fun addSuggestedMember(pokemon: Pokemon) {
+        val slot = _teamList.value?.indexOfFirst { it == null } ?: -1
+        if (slot >= 0) setTeamMember(slot, pokemon)
     }
 
     private fun cycleSelection(direction: Int) {

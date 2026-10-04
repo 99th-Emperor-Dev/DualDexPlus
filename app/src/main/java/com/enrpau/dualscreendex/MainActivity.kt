@@ -203,6 +203,8 @@ class MainActivity : AppCompatActivity() {
             gridTeamGaps.visibility = if (show) View.VISIBLE else View.GONE
         }
 
+        viewModel.teamSuggestions.observeForeverSafe { renderSuggestions(it) }
+
         // while picking a member, the dex list title tells you which slot you're filling
         viewModel.selectionIndex.observeForeverSafe { slot ->
             tvScreenTitle.text = if (slot >= 0) "Pick for slot ${slot + 1}" else getString(R.string.pokedex_title)
@@ -1101,6 +1103,80 @@ class MainActivity : AppCompatActivity() {
     }
 
     data class MatchupData(val type: PokemonType, val multiplier: Double)
+
+    private var suggestionsPanel: LinearLayout? = null
+
+    /**
+     * Team builder: "Suggested teammates" under the team analysis. Each row says what the pokemon fixes
+     * (resists the shared weaknesses, hits the coverage gaps); "+ Add" puts it in the first empty slot.
+     */
+    private fun renderSuggestions(list: List<MainViewModel.Suggestion>) {
+        val d = resources.displayMetrics.density
+        fun dp(v: Int) = (v * d).toInt()
+        val theme = ThemeManager.currentTheme
+        val panel = suggestionsPanel ?: LinearLayout(this).apply {
+            orientation = LinearLayout.VERTICAL
+            setPadding(dp(14), dp(12), dp(14), dp(12))
+            val parent = gridTeamGaps.parent as android.view.ViewGroup
+            parent.addView(this, parent.indexOfChild(gridTeamGaps) + 1, LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT).apply { topMargin = dp(16) })
+            suggestionsPanel = this
+        }
+        panel.removeAllViews()
+        panel.visibility = if (list.isEmpty()) View.GONE else View.VISIBLE
+        if (list.isEmpty()) return
+        panel.background = if (theme.isRetroScreen) ThemeManager.boxDrawable(this)
+            else ThemeManager.shape(this, theme.gridBackgroundColor, theme.cardCornerRadius / d)
+
+        panel.addView(TextView(this).apply {
+            text = "SUGGESTED TEAMMATES"
+            textSize = 12f
+            letterSpacing = 0.08f
+            setTypeface(null, android.graphics.Typeface.BOLD)
+            setTextColor(theme.labelTextColor)
+            setPadding(0, 0, 0, dp(6))
+        })
+        fun names(types: List<PokemonType>) = types.joinToString(", ") { it.name.lowercase().replaceFirstChar { c -> c.uppercase() } }
+        for (s in list) {
+            val row = LinearLayout(this).apply {
+                orientation = LinearLayout.HORIZONTAL
+                gravity = android.view.Gravity.CENTER_VERTICAL
+                setPadding(0, dp(4), 0, dp(4))
+            }
+            val icon = android.widget.ImageView(this).apply { scaleType = android.widget.ImageView.ScaleType.FIT_CENTER }
+            SpriteManager.bindSprite(icon, s.pokemon, icon = true)
+            row.addView(icon, LinearLayout.LayoutParams(dp(44), dp(44)))
+            val textCol = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL; setPadding(dp(10), 0, dp(8), 0) }
+            textCol.addView(TextView(this).apply {
+                text = displayNameOf(s.pokemon)
+                textSize = 15f
+                setTypeface(null, android.graphics.Typeface.BOLD)
+                setTextColor(theme.listTextColor)
+            })
+            textCol.addView(TextView(this).apply {
+                text = listOfNotNull(
+                    s.resists.takeIf { it.isNotEmpty() }?.let { "resists ${names(it)}" },
+                    s.hits.takeIf { it.isNotEmpty() }?.let { "hits ${names(it)}" }
+                ).joinToString(" · ")
+                textSize = 12f
+                setTextColor(ColorUtils.setAlphaComponent(theme.listTextColor, 170))
+            })
+            row.addView(textCol, LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f))
+            row.addView(TextView(this).apply {
+                text = "+ Add"
+                textSize = 13f
+                setTypeface(null, android.graphics.Typeface.BOLD)
+                setTextColor(ThemeManager.ui(Color.WHITE))
+                setPadding(dp(12), dp(5), dp(12), dp(5))
+                background = ThemeManager.shape(this@MainActivity, ThemeManager.ui(theme.labelTextColor), 999f)
+                setOnClickListener { viewModel.addSuggestedMember(s.pokemon) }
+            })
+            // tapping the rest of the row opens its card
+            row.setOnClickListener { viewModel.onPokemonSelectedFromTeam(s.pokemon) }
+            panel.addView(row)
+        }
+        ThemeManager.applyFont(panel)
+    }
     private fun Int.blendWithWhite(ratio: Float): Int = ColorUtils.blendARGB(this, Color.WHITE, ratio)
     private fun Int.blendWithBg(ratio: Float): Int = ColorUtils.blendARGB(this, ThemeManager.currentTheme.windowBackground, ratio)
 

@@ -90,6 +90,7 @@ All taken on the bottom screen of a real AYN Thor.
 * **A team for every game,** with as many teams as you like: rename, delete, switch, and copy or paste in Showdown format.
 * **"Your team vs this"** on every card. Each team member shows how hard it hits and how hard it gets hit, best counter first. Tap a member to open it.
 * **Team analysis:** shared weaknesses, and types your team can't hit super-effectively.
+* **Suggested teammates** from the current game's Pokédex. Each one shows which of your weaknesses it resists and which gaps it hits; "+ Add" drops it into the next empty slot.
 
 ### Scanning
 * **Opens the card by itself** when a PokÃ©mon is found. If you close it to browse, it stays closed until that battle ends, and the PokÃ©mon's name button takes you back.
