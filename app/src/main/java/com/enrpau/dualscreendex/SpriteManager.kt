@@ -88,10 +88,13 @@ object SpriteManager {
     private fun onlineKind(context: Context): AnimatedSprites.Kind? {
         val catalog = com.enrpau.dualscreendex.data.GameCatalog
         val folder = catalog.currentVersion(context)?.spriteFolder
+        val custom = catalog.customSpriteSet(context)
         val modern = if (catalog.isMatchDex(context)) folder == MODERN
+            else if (custom != null) custom == MODERN || custom == "bw"
             else RomManager.currentProfile.baseMechanics == com.enrpau.dualscreendex.data.RomProfile.Mechanics.GEN_6_PLUS
         if (!modern || ThemeManager.isLimitedPalette) return null
-        val twoD = catalog.isUse2D(context) || (catalog.currentVersion(context)?.always2D == true && catalog.isMatchDex(context))
+        val twoD = catalog.isUse2D(context) || custom == "bw" ||
+            (catalog.currentVersion(context)?.always2D == true && catalog.isMatchDex(context))
         return if (twoD) AnimatedSprites.Kind.PIXEL_2D else AnimatedSprites.Kind.MODEL_3D
     }
 
@@ -226,6 +229,10 @@ object SpriteManager {
     private fun resolveFolder(context: Context): String {
         val catalog = com.enrpau.dualscreendex.data.GameCatalog
         val version = catalog.currentVersion(context)
+        // a sprite set picked by hand (only offered when the dex isn't matched to a game)
+        catalog.customSpriteSet(context)?.let { set ->
+            return if (set == MODERN && catalog.isUse2D(context)) "bw" else set
+        }
         val folder = if (version != null && catalog.isMatchDex(context)) version.spriteFolder
         else when (RomManager.currentProfile.baseMechanics) {
             com.enrpau.dualscreendex.data.RomProfile.Mechanics.GEN_1 -> if (version?.spriteFolder == "yellow") "yellow" else GEN1
@@ -270,9 +277,13 @@ object SpriteManager {
     private fun animationFor(context: Context, pokemon: Pokemon): AnimationDrawable? {
         if (pokemon.variantLabel != null) return null // the animated sets only have base forms
         val catalog = com.enrpau.dualscreendex.data.GameCatalog
-        if (!catalog.isMatchDex(context)) return null
         if (ThemeManager.nativeColorSprites) return null   // yellow's pokemon didn't animate
-        val folder = catalog.currentVersion(context)?.animFolder ?: return null
+        // custom dex: the chosen sprite set brings its own idle animations (Crystal, Emerald)
+        val folder = if (!catalog.isMatchDex(context)) when (catalog.customSpriteSet(context)) {
+            "crystal" -> "crystal_anim"
+            "emerald" -> "emerald_anim"
+            else -> return null
+        } else catalog.currentVersion(context)?.animFolder ?: return null
         val name = "${pokemon.id}.gif"
         if (name !in folderIndex(context, folder)) return null
         val key = "$folder/$name"

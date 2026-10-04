@@ -71,6 +71,7 @@ All taken on the bottom screen of a real AYN Thor.
 * **Exact version:** Gold vs Silver vs Crystal, Sword vs Shield and so on. The version changes the colours and the sprites.
 * **Each game's own PokÃ©dex order and numbers,** for example Hisui #001 Rowlet or Johto #001 Chikorita, including DLC dexes. You can limit the list to PokÃ©mon in that game, or show all 1025.
 * **Match dex to game:** the type chart, dex, forms and sprites all follow the selected game.
+* **Your own dex, any sprites:** with "Match dex to game" off (for a ROM hack or custom profile), Settings → **Sprites** lets you pick any game's sprites (Red/Blue to Black/White) or the 3D models instead of whatever the dex's generation implies.
 * **Megas, Primals and regional forms** with their own types and stats, only in games where they exist.
 * **Partner Pikachu and Partner Eevee** in Let's Go, with their own stats.
 

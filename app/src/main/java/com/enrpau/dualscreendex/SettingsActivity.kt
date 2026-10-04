@@ -304,6 +304,9 @@ class SettingsActivity : AppCompatActivity() {
             else "Off shows the full National Dex (1025)."
         findViewById<View>(R.id.rowGameDex).alpha = if (matching) 1f else 0.5f
 
+        // custom dex: pick any game's sprites (the dex no longer decides the look)
+        refreshSpriteSetRow(box, matching)
+
         // gen 1: screen palette (game boy green, pocket, light, game boy color, super game boy)
         val paletteRow = findViewById<LinearLayout>(R.id.paletteRow)
         paletteRow.removeAllViews()
@@ -360,8 +363,64 @@ class SettingsActivity : AppCompatActivity() {
         ThemeManager.applyFont(box)
     }
 
-    // ---------- scanner ----------
+    /**
+     * "Sprites" row, only while "Match dex to game" is off: lets a custom dex (Radical Red, a profile...)
+     * use any game's sprites, or 3D models, instead of whatever its generation implies.
+     */
+    private fun refreshSpriteSetRow(box: LinearLayout, matching: Boolean) {
+        val d = density
+        val theme = ThemeManager.currentTheme
+        val row = box.findViewWithTag<LinearLayout>("spriteSetRow") ?: LinearLayout(this).apply {
+            tag = "spriteSetRow"
+            orientation = LinearLayout.HORIZONTAL
+            gravity = android.view.Gravity.CENTER_VERTICAL
+            box.addView(this, box.indexOfChild(findViewById(R.id.rowGameDex)) + 1, LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT).apply { topMargin = (12 * d).toInt() })
+        }
+        row.removeAllViews()
+        row.visibility = if (matching) View.GONE else View.VISIBLE
+        if (matching) return
+        val current = GameCatalog.spriteSets.firstOrNull { it.first == GameCatalog.spriteSet(this) } ?: GameCatalog.spriteSets[0]
+        val labels = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL }
+        labels.addView(TextView(this).apply {
+            text = "Sprites"; textSize = 14f; setTypeface(null, android.graphics.Typeface.BOLD); setTextColor(theme.listTextColor)
+        })
+        labels.addView(TextView(this).apply {
+            text = "Use any game's sprites with your own dex."; textSize = 12f; setTextColor(theme.listTextColor)
+        })
+        row.addView(labels, LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f))
+        row.addView(MaterialButton(this, null, com.google.android.material.R.attr.materialButtonOutlinedStyle).apply {
+            text = "${current.second} ▾"
+            isAllCaps = false
+            styleButton(this)
+            setOnClickListener {
+                val sets = GameCatalog.spriteSets
+                android.app.AlertDialog.Builder(this@SettingsActivity)
+                    .setTitle("Sprites")
+                    .setSingleChoiceItems(sets.map { it.second }.toTypedArray(), sets.indexOf(current)) { dlg, which ->
+                        GameCatalog.setSpriteSet(this@SettingsActivity, sets[which].first)
+                        dlg.dismiss()
+                        refreshGameOptions()
+                    }
+                    .show()
+            }
+        }, LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT).apply {
+            marginStart = (12 * d).toInt()
+        })
+    }
 
+    /** Settings buttons look like the game's windows. */
+    private fun styleButton(btn: MaterialButton) {
+        btn.setTextColor(ThemeManager.currentTheme.listTextColor)
+        btn.backgroundTintList = null
+        btn.background = ThemeManager.boxDrawable(this)
+        btn.strokeWidth = 0
+        btn.isAllCaps = false
+        btn.letterSpacing = 0f
+        btn.setRippleColor(android.content.res.ColorStateList.valueOf("#20000000".toColorInt()))
+    }
+
+    // ---------- scanner ----------
     private fun setupScannerClicks() {
         // which screen the app lives on: the second one (default), or the main one for devices
         // whose "main" display is physically the bottom screen
@@ -435,15 +494,7 @@ class SettingsActivity : AppCompatActivity() {
         }
 
         // buttons become game windows too
-        fun styleButton(btn: MaterialButton) {
-            btn.setTextColor(theme.listTextColor)
-            btn.backgroundTintList = null
-            btn.background = ThemeManager.boxDrawable(this)
-            btn.strokeWidth = 0
-            btn.isAllCaps = false
-            btn.letterSpacing = 0f
-            btn.setRippleColor(android.content.res.ColorStateList.valueOf("#20000000".toColorInt()))
-        }
+
         listOf(findViewById<MaterialButton>(R.id.btnAppScreen), btnScanSource, btnScanAlign, findViewById(R.id.btnScanLanguage), findViewById<MaterialButton>(R.id.btnCreateProfile)).forEach { styleButton(it) }
 
         ThemeManager.applyFont(root)

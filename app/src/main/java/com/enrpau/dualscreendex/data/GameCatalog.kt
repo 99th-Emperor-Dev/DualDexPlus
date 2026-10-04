@@ -190,6 +190,24 @@ object GameCatalog {
     fun isUse2D(context: Context) = prefs(context).getBoolean(KEY_USE_2D, false)
     fun setUse2D(context: Context, on: Boolean) = prefs(context).edit { putBoolean(KEY_USE_2D, on) }
 
+    /**
+     * Sprite set to use when "Match dex to game" is off, so a custom dex can still look like any game.
+     * "auto" keeps the old behaviour (sprites follow the dex's generation).
+     */
+    val spriteSets = listOf(
+        "auto" to "Automatic (follow the dex)",
+        "rb" to "Red / Blue", "yellow" to "Yellow",
+        "gold" to "Gold", "silver" to "Silver", "crystal" to "Crystal",
+        "rs" to "Ruby / Sapphire", "emerald" to "Emerald", "frlg" to "FireRed / LeafGreen",
+        "dp" to "Diamond / Pearl", "pt" to "Platinum", "hgss" to "HeartGold / SoulSilver",
+        "bw" to "Black / White (2D)", "gen6" to "3D models"
+    )
+    fun spriteSet(context: Context) = prefs(context).getString("SPRITE_SET", "auto") ?: "auto"
+    fun setSpriteSet(context: Context, set: String) = prefs(context).edit { putString("SPRITE_SET", set) }
+    /** The custom set in effect right now, or null when sprites follow the game / dex. */
+    fun customSpriteSet(context: Context): String? =
+        if (isMatchDex(context)) null else spriteSet(context).takeIf { it != "auto" }
+
     /** Sprite animations (idle animations, animated models, idle bob). Off = still sprites, lighter on the GPU. */
     fun isAnimationsOn(context: Context) = prefs(context).getBoolean("SPRITE_ANIMATIONS", true)
     fun setAnimationsOn(context: Context, on: Boolean) = prefs(context).edit { putBoolean("SPRITE_ANIMATIONS", on) }
