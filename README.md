@@ -46,6 +46,17 @@ All taken on the bottom screen of a real AYN Thor.
 
 *A GBC-style ROM hack on the top screen, and a custom game in DualDex Plus below it: Gold/Silver colours, Silver sprites, 4-colour sprites and dithering, so Lillipup looks like the game's own sprite.*
 
+### In action
+Litten is opened from the team strip; the **BATTLE Lillipup** button jumps back to the opponent from the game on the top screen.
+
+![Litten, then back to the opponent](docs/screenshots/v1.1/litten_to_opponent.gif)
+
+*Recorded on an AYN Thor. Full video: [DualDexPlus-v1.1-demo.mp4](https://github.com/99th-Emperor-Dev/DualDexPlus/releases/download/v1.1/DualDexPlus-v1.1-demo.mp4)*
+
+The custom game's settings, with the game it matches:
+
+![Custom game settings with the ROM hack on the top screen](docs/screenshots/v1.1/custom_game_both_screens.webp)
+
 ### Your own games
 In Settings, under **My games**, tap **+ Add game** to save your current setup under a name, for example a ROM hack you're playing.
 * **What it saves:** the base game and version, Dex Version, sprites, palette, 4-colour sprites, dithering and LCD effect.
