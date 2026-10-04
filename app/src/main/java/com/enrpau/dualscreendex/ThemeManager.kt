@@ -95,6 +95,7 @@ object ThemeManager {
         nativeColorSprites = base.monochrome && com.enrpau.dualscreendex.data.GameCatalog.isYellowOnGbc(context)
         currentTheme = withVersion(context, base)
         dithering = com.enrpau.dualscreendex.data.GameCatalog.isDither(context)
+        fourColour = com.enrpau.dualscreendex.data.GameCatalog.isFourColour(context)
     }
 
     /** Repaints the game boy theme in one 4-shade palette: p[0] darkest .. p[3] lightest. */
@@ -432,6 +433,8 @@ object ThemeManager {
         val h = src.height
         val px = IntArray(w * h)
         src.getPixels(px, 0, w, 0, 0, w, h)
+        // gbc-style: every sprite boils down to 4 colours of its own (black, white and its two main colours)
+        if (fourColour && t.gbc15Bit) return fourColourSprite(px, w, h)
         val memo = HashMap<Long, Int>()
         // optional ordered dithering (the checkerboard blends GBC-style rom hacks use): each pixel is nudged
         // by a 4x4 Bayer pattern before snapping, so in-between colours become a fine mix of two palette colours
@@ -452,6 +455,56 @@ object ThemeManager {
 
     /** "Dithering" setting, read by [quantizeBitmap]. */
     var dithering = false
+    /** "4-colour sprites" setting (Game Boy Color themes), read by [quantizeBitmap]. */
+    var fourColour = false
+
+    private fun dist(a: Int, b: Int): Int {
+        val dr = Color.red(a) - Color.red(b); val dg = Color.green(a) - Color.green(b); val db = Color.blue(a) - Color.blue(b)
+        return 3 * dr * dr + 4 * dg * dg + 2 * db * db
+    }
+
+    /**
+     * Like a real Game Boy Color sprite: the darkest and lightest colours stay as outline and highlight, and the
+     * rest of the sprite is grouped (k-means) into its two main colours. With "Dithering" on, pixels between two
+     * of those colours become a checkerboard of both. The 4 colours are then snapped to the GBC palette.
+     */
+    private fun fourColourSprite(px: IntArray, w: Int, h: Int): Bitmap {
+        val opaque = px.filter { Color.alpha(it) >= 128 }.map { it or 0xFF000000.toInt() }
+        if (opaque.isEmpty()) return Bitmap.createBitmap(px.map { 0 }.toIntArray(), w, h, Bitmap.Config.ARGB_8888)
+        fun lum(c: Int) = Color.red(c) * 3 + Color.green(c) * 6 + Color.blue(c)
+        val dark = opaque.minByOrNull { lum(it) }!!
+        val light = opaque.maxByOrNull { lum(it) }!!
+        // two mid colours: the sprite's most used colour, then the most used one that differs clearly from it.
+        // Real colours (not averages), so a green-and-pink sprite stays green and pink instead of turning brown.
+        val counts = HashMap<Int, Int>()
+        for (c in opaque) if (dist(c, dark) > 2000 && dist(c, light) > 2000) {
+            val g = gbc(c); counts[g] = (counts[g] ?: 0) + 1
+        }
+        val byUse = counts.entries.sortedByDescending { it.value }.map { it.key }
+        val first = byUse.firstOrNull() ?: gbc(opaque[opaque.size / 2])
+        val second = byUse.firstOrNull { dist(it, first) > 6000 } ?: byUse.getOrNull(1) ?: first
+        val centers = intArrayOf(first, second)
+        val palette = intArrayOf(dark, centers[0], centers[1], light).map { gbc(it) }
+        val out = IntArray(px.size)
+        for (i in px.indices) {
+            val p = px[i]
+            if (Color.alpha(p) < 128) continue
+            val c = p or 0xFF000000.toInt()
+            // nearest and second-nearest of the 4 colours
+            var b1 = 0; var b2 = 1
+            var d1 = Int.MAX_VALUE; var d2 = Int.MAX_VALUE
+            for (k in palette.indices) {
+                val d = dist(c, palette[k])
+                if (d < d1) { d2 = d1; b2 = b1; d1 = d; b1 = k } else if (d < d2) { d2 = d; b2 = k }
+            }
+            out[i] = if (dithering && d1 + d2 > 0) {
+                // the closer to halfway between the two colours, the more pixels take the second one
+                val share = d1.toFloat() / (d1 + d2)
+                if (BAYER[(i / w % 4) * 4 + i % w % 4] / 16f < share * 0.9f) palette[b2] else palette[b1]
+            } else palette[b1]
+        }
+        return Bitmap.createBitmap(out, w, h, Bitmap.Config.ARGB_8888)
+    }
     private val BAYER = intArrayOf(0, 8, 2, 10, 12, 4, 14, 6, 3, 11, 1, 9, 15, 7, 13, 5)
 
     /**

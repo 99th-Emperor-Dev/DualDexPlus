@@ -274,7 +274,7 @@ object SpriteManager {
 
     private fun paletteCopy(src: Bitmap): Bitmap {
         if (!ThemeManager.isLimitedPalette) return src
-        val key = ThemeManager.currentTheme.id + "/" + ThemeManager.dithering + "/" + System.identityHashCode(src)
+        val key = ThemeManager.currentTheme.id + "/" + ThemeManager.dithering + ThemeManager.fourColour + "/" + System.identityHashCode(src)
         return paletteCache.get(key) ?: ThemeManager.quantizeBitmap(src).also { paletteCache.put(key, it) }
     }
 

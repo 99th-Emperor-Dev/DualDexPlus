@@ -210,6 +210,9 @@ object GameCatalog {
     /** Checkerboard dithering when sprites are snapped to the Game Boy / Game Boy Color palettes. */
     fun isDither(context: Context) = prefs(context).getBoolean("DITHER", false)
     fun setDither(context: Context, on: Boolean) = prefs(context).edit { putBoolean("DITHER", on) }
+    /** Game Boy Color themes: every sprite cut to 4 colours of its own, like real GBC sprites. */
+    fun isFourColour(context: Context) = prefs(context).getBoolean("FOUR_COLOUR", false)
+    fun setFourColour(context: Context, on: Boolean) = prefs(context).edit { putBoolean("FOUR_COLOUR", on) }
 
     /** Sprite animations (idle animations, animated models, idle bob). Off = still sprites, lighter on the GPU. */
     fun isAnimationsOn(context: Context) = prefs(context).getBoolean("SPRITE_ANIMATIONS", true)
