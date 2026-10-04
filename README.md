@@ -8,7 +8,7 @@ It's a fork of [DualScreenDex](https://github.com/enrique-paulino/DualScreenDex)
 
 ## Demo
 
-[![DualDex Plus demo on YouTube](https://img.youtube.com/vi/TUgP3m9KfhI/hqdefault.jpg)](https://youtu.be/TUgP3m9KfhI)
+[<img src="https://img.youtube.com/vi/TUgP3m9KfhI/hqdefault.jpg" alt="DualDex Plus demo on YouTube" width="480">](https://youtu.be/TUgP3m9KfhI)
 
 Recorded on a real AYN Thor. Click the picture to watch it on YouTube.
 
@@ -20,42 +20,42 @@ All taken on the bottom screen of a real AYN Thor.
 
 | FireRed · scanned from the battle on the top screen | FireRed · browsing with the battle tab |
 |:---:|:---:|
-| ![FireRed scan](docs/screenshots/firered_scan_mewtwo.png) | ![FireRed](docs/screenshots/firered_raichu_scan.png) |
+| <img src="docs/screenshots/firered_scan_mewtwo.png" alt="FireRed scan" width="280"> | <img src="docs/screenshots/firered_raichu_scan.png" alt="FireRed" width="280"> |
 | **Crystal** | **Emerald** |
-| ![Crystal](docs/screenshots/crystal_typhlosion.png) | ![Emerald](docs/screenshots/emerald_zigzagoon.png) |
+| <img src="docs/screenshots/crystal_typhlosion.png" alt="Crystal" width="280"> | <img src="docs/screenshots/emerald_zigzagoon.png" alt="Emerald" width="280"> |
 | **Violet** | **National Dex · regional forms** |
-| ![Violet](docs/screenshots/violet_floragato.png) | ![Alolan Vulpix](docs/screenshots/national_alolan_vulpix.png) |
+| <img src="docs/screenshots/violet_floragato.png" alt="Violet" width="280"> | <img src="docs/screenshots/national_alolan_vulpix.png" alt="Alolan Vulpix" width="280"> |
 | **Team builder (Legends: Arceus)** | **Pokédex list (FireRed)** |
-| ![Team builder](docs/screenshots/team_builder_arceus.png) | ![List](docs/screenshots/firered_list.png) |
+| <img src="docs/screenshots/team_builder_arceus.png" alt="Team builder" width="280"> | <img src="docs/screenshots/firered_list.png" alt="List" width="280"> |
 | **Settings · FireRed or LeafGreen** | **Settings · Gen 1 versions and palettes** |
-| ![Versions](docs/screenshots/settings_versions.png) | ![Gen 1 palettes](docs/screenshots/settings_gen1_palettes.png) |
+| <img src="docs/screenshots/settings_versions.png" alt="Versions" width="280"> | <img src="docs/screenshots/settings_gen1_palettes.png" alt="Gen 1 palettes" width="280"> |
 
 ### Gen 1 screen palettes
 
 | Game Boy | Pocket | Light |
 |:---:|:---:|:---:|
-| ![Game Boy](docs/screenshots/gen1_gameboy.png) | ![Pocket](docs/screenshots/gen1_pocket_mew.png) | ![Light](docs/screenshots/gen1_light.png) |
+| <img src="docs/screenshots/gen1_gameboy.png" alt="Game Boy" width="280"> | <img src="docs/screenshots/gen1_pocket_mew.png" alt="Pocket" width="280"> | <img src="docs/screenshots/gen1_light.png" alt="Light" width="280"> |
 | **Game Boy Color (Yellow)** | **Super Game Boy** | |
-| ![Game Boy Color](docs/screenshots/gen1_gbc_yellow.png) | ![Super Game Boy](docs/screenshots/gen1_sgb.png) | |
+| <img src="docs/screenshots/gen1_gbc_yellow.png" alt="Game Boy Color" width="280"> | <img src="docs/screenshots/gen1_sgb.png" alt="Super Game Boy" width="280"> | |
 
 ---
 
 ## New in v1.1
 
-![A ROM hack on the top screen, DualDex Plus customised to match on the bottom](docs/screenshots/v1.1/both_screens_lillipup.png)
+<img src="docs/screenshots/v1.1/both_screens_lillipup.png" alt="A ROM hack on the top screen, DualDex Plus customised to match on the bottom" width="360">
 
 *A GBC-style ROM hack on the top screen, and a custom game in DualDex Plus below it: Gold/Silver colours, Silver sprites, 4-colour sprites and dithering, so Lillipup looks like the game's own sprite.*
 
 ### In action
 Litten is opened from the team strip; the **BATTLE Lillipup** button jumps back to the opponent from the game on the top screen.
 
-![Litten, then back to the opponent](docs/screenshots/v1.1/litten_to_opponent.gif)
+<img src="docs/screenshots/v1.1/litten_to_opponent.gif" alt="Litten, then back to the opponent" width="360">
 
 *Recorded on an AYN Thor. Full video: [DualDexPlus-v1.1-demo.mp4](https://github.com/99th-Emperor-Dev/DualDexPlus/releases/download/v1.1/DualDexPlus-v1.1-demo.mp4)*
 
 The custom game's settings, with the game it matches:
 
-![Custom game settings with the ROM hack on the top screen](docs/screenshots/v1.1/custom_game_both_screens.webp)
+<img src="docs/screenshots/v1.1/custom_game_both_screens.webp" alt="Custom game settings with the ROM hack on the top screen" width="360">
 
 ### Your own games
 In Settings, under **My games**, tap **+ Add game** to save your current setup under a name, for example a ROM hack you're playing.
@@ -95,15 +95,15 @@ In Settings, under **My games**, tap **+ Add game** to save your current setup u
 
 | My games | Sprites picker |
 |:---:|:---:|
-| ![My games](docs/screenshots/v1.1/my_games.png) | ![Sprites picker](docs/screenshots/v1.1/sprites_picker.png) |
+| <img src="docs/screenshots/v1.1/my_games.png" alt="My games" width="280"> | <img src="docs/screenshots/v1.1/sprites_picker.png" alt="Sprites picker" width="280"> |
 | **Crystal sprites in another game** | **Pixel Rowlet in a GBC theme** |
-| ![Crystal sprites](docs/screenshots/v1.1/crystal_sprites_any_game.png) | ![Rowlet](docs/screenshots/v1.1/rowlet_pixel_sprite.png) |
+| <img src="docs/screenshots/v1.1/crystal_sprites_any_game.png" alt="Crystal sprites" width="280"> | <img src="docs/screenshots/v1.1/rowlet_pixel_sprite.png" alt="Rowlet" width="280"> |
 | **4-colour sprites and dithering** | **Herdier, 4 colours** |
-| ![Settings](docs/screenshots/v1.1/settings_sprites_4colour_dithering.png) | ![Herdier](docs/screenshots/v1.1/herdier_4colour.png) |
+| <img src="docs/screenshots/v1.1/settings_sprites_4colour_dithering.png" alt="Settings" width="280"> | <img src="docs/screenshots/v1.1/herdier_4colour.png" alt="Herdier" width="280"> |
 | **Suggested teammates** | **Sprite animations switch** |
-| ![Suggested teammates](docs/screenshots/v1.1/suggested_teammates.png) | ![Sprite animations](docs/screenshots/v1.1/sprite_animations_toggle.png) |
+| <img src="docs/screenshots/v1.1/suggested_teammates.png" alt="Suggested teammates" width="280"> | <img src="docs/screenshots/v1.1/sprite_animations_toggle.png" alt="Sprite animations" width="280"> |
 | **App Screen** | **Card stays closed, battle button** |
-| ![App Screen](docs/screenshots/v1.1/app_screen.png) | ![Battle tab](docs/screenshots/v1.1/battle_tab_card_stays_closed.png) |
+| <img src="docs/screenshots/v1.1/app_screen.png" alt="App Screen" width="280"> | <img src="docs/screenshots/v1.1/battle_tab_card_stays_closed.png" alt="Battle tab" width="280"> |
 
 ---
 
