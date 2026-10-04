@@ -171,6 +171,8 @@ class SettingsActivity : AppCompatActivity() {
     // ---------- games ----------
 
     private fun selectGame(theme: AppTheme) {
+        // a built-in game: leave the custom game as it was saved
+        com.enrpau.dualscreendex.data.CustomGames.clearActive(this)
         prefs.edit { putString("SELECTED_THEME_ID", theme.id) }
         ThemeManager.loadTheme(this)
         GameCatalog.syncProfile(this)
@@ -181,7 +183,8 @@ class SettingsActivity : AppCompatActivity() {
     private fun refreshThemeUI() {
         val grid = findViewById<LinearLayout>(R.id.themeGrid)
         grid.removeAllViews()
-        val selected = ThemeManager.currentTheme.id
+        val customActive = com.enrpau.dualscreendex.data.CustomGames.activeId(this)
+        val selected = if (customActive != null) "" else ThemeManager.currentTheme.id
         val d = density
 
         ThemeManager.allThemes.chunked(2).forEach { pair ->
@@ -230,6 +233,133 @@ class SettingsActivity : AppCompatActivity() {
             if (pair.size == 1) row.addView(View(this), LinearLayout.LayoutParams(0, 0, 1f))
             grid.addView(row)
         }
+        addCustomGameTiles(grid, customActive)
+    }
+
+    /**
+     * "My games": the user's own games after the built-in ones, each drawn in its base game's style.
+     * Tap = use it, hold = rename / delete, "+ Add game" saves the current settings as a new one.
+     */
+    private fun addCustomGameTiles(grid: LinearLayout, activeId: String?) {
+        val d = density
+        val games = com.enrpau.dualscreendex.data.CustomGames.all(this)
+        grid.addView(TextView(this).apply {
+            text = "My games"
+            textSize = 16f
+            setTypeface(null, android.graphics.Typeface.BOLD)
+            setTextColor(ThemeManager.currentTheme.screenTextColor)
+            setPadding((4 * d).toInt(), (16 * d).toInt(), 0, (4 * d).toInt())
+            ThemeManager.applyFont(this)
+        })
+        // null = the "+ Add game" tile
+        val entries: List<com.enrpau.dualscreendex.data.CustomGames.CustomGame?> = games + listOf(null)
+        entries.chunked(2).forEach { pair ->
+            val row = LinearLayout(this).apply { orientation = LinearLayout.HORIZONTAL }
+            pair.forEach { game ->
+                val baseId = game?.settings?.get("SELECTED_THEME_ID")?.removePrefix("s:")
+                val t = ThemeManager.allThemes.find { it.id == baseId } ?: ThemeManager.currentTheme
+                val isActive = game != null && game.id == activeId
+                val tile = FrameLayout(this).apply {
+                    background = ThemeManager.backgroundDrawable(this@SettingsActivity, t)
+                    foreground = if (isActive) android.graphics.drawable.GradientDrawable().apply {
+                        setStroke((4 * d).toInt(), ThemeManager.currentTheme.screenTextColor)
+                    } else null
+                    setPadding((10 * d).toInt(), (12 * d).toInt(), (10 * d).toInt(), (12 * d).toInt())
+                    isClickable = true
+                    if (game == null) {
+                        setOnClickListener {
+                            promptName("Add game", "") { name ->
+                                com.enrpau.dualscreendex.data.CustomGames.add(this@SettingsActivity, name)
+                                refreshAll()
+                            }
+                        }
+                    } else {
+                        setOnClickListener {
+                            com.enrpau.dualscreendex.data.CustomGames.apply(this@SettingsActivity, game)
+                            ThemeManager.loadTheme(this@SettingsActivity)
+                            refreshAll()
+                        }
+                        setOnLongClickListener { customGameMenu(game); true }
+                    }
+                }
+                val window = LinearLayout(this).apply {
+                    orientation = LinearLayout.VERTICAL
+                    gravity = Gravity.CENTER
+                    background = ThemeManager.boxDrawable(this@SettingsActivity,
+                        t.headerColor.takeIf { it != Color.TRANSPARENT } ?: t.gridBackgroundColor, t)
+                    setPadding((8 * d).toInt(), (10 * d).toInt(), (8 * d).toInt(), (10 * d).toInt())
+                }
+                val onWindow = if (t.headerColor != Color.TRANSPARENT) t.headerTextColor else t.listTextColor
+                window.addView(TextView(this).apply {
+                    text = if (game == null) "+ Add game" else (if (isActive) cursor() else "") + game.name
+                    textSize = 12f
+                    gravity = Gravity.CENTER
+                    setTypeface(null, android.graphics.Typeface.BOLD)
+                    setTextColor(onWindow)
+                })
+                window.addView(TextView(this).apply {
+                    text = if (game == null) "saves your current settings" else "hold to rename"
+                    textSize = 10f
+                    gravity = Gravity.CENTER
+                    setTextColor(ColorUtils.setAlphaComponent(onWindow, 190))
+                })
+                ThemeManager.applyFont(window, t)
+                tile.addView(window)
+                row.addView(tile, LinearLayout.LayoutParams(0, (92 * d).toInt(), 1f).apply {
+                    setMargins((4 * d).toInt(), (4 * d).toInt(), (4 * d).toInt(), (4 * d).toInt())
+                })
+            }
+            if (pair.size == 1) row.addView(View(this), LinearLayout.LayoutParams(0, 0, 1f))
+            grid.addView(row)
+        }
+    }
+
+    private fun customGameMenu(game: com.enrpau.dualscreendex.data.CustomGames.CustomGame) {
+        android.app.AlertDialog.Builder(this)
+            .setTitle(game.name)
+            .setItems(arrayOf("Rename", "Delete")) { _, which ->
+                if (which == 0) {
+                    promptName("Rename", game.name) { name ->
+                        com.enrpau.dualscreendex.data.CustomGames.rename(this, game.id, name)
+                        refreshAll()
+                    }
+                } else {
+                    android.app.AlertDialog.Builder(this)
+                        .setMessage("Delete \"${game.name}\"? Its teams stay saved but won't show.")
+                        .setPositiveButton("Delete") { _, _ ->
+                            com.enrpau.dualscreendex.data.CustomGames.delete(this, game.id)
+                            refreshAll()
+                        }
+                        .setNegativeButton("Cancel", null)
+                        .show()
+                }
+            }
+            .show()
+    }
+
+    private fun promptName(title: String, current: String, onDone: (String) -> Unit) {
+        val input = android.widget.EditText(this).apply {
+            setText(current)
+            hint = "e.g. Pokémon Crystal Clear"
+            setSingleLine()
+            setSelection(text.length)
+        }
+        android.app.AlertDialog.Builder(this)
+            .setTitle(title)
+            .setView(FrameLayout(this).apply {
+                val p = (20 * density).toInt()
+                setPadding(p, (8 * density).toInt(), p, 0)
+                addView(input)
+            })
+            .setPositiveButton("Save") { _, _ -> onDone(input.text.toString()) }
+            .setNegativeButton("Cancel", null)
+            .show()
+    }
+
+    override fun onPause() {
+        super.onPause()
+        // whatever changed while a custom game is active belongs to that game
+        com.enrpau.dualscreendex.data.CustomGames.saveActive(this)
     }
 
     private fun refreshGameOptions() {

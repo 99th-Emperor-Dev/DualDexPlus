@@ -63,12 +63,11 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     // teams belong to the selected game when "Match dex to game" is on, otherwise to the Dex Version
-    private fun teamScope(): String =
-        GameCatalog.activeFamily(getApplication())?.takeIf { it.themeId != "dynamic" }?.let { "game_" + it.themeId }
-            ?: RomManager.currentProfile.id
+    private fun teamScope(): String = com.enrpau.dualscreendex.data.CustomGames.teamScope(getApplication())
 
     /** Shown above the team: "Crystal", "Sword"... or the Dex Version name. */
-    fun teamScopeName(): String = GameCatalog.activeName(getApplication()) ?: RomManager.currentProfile.name
+    fun teamScopeName(): String = com.enrpau.dualscreendex.data.CustomGames.active(getApplication())?.name
+        ?: GameCatalog.activeName(getApplication()) ?: RomManager.currentProfile.name
 
     fun teamsForCurrentGame(): List<Team> = TeamManager.teamsFor(getApplication(), teamScope())
 

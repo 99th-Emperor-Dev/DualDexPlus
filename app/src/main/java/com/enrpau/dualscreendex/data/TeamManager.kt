@@ -92,6 +92,17 @@ object TeamManager {
         save(context)
     }
 
+    /** A new custom game starts with copies of the teams you had in the game it was made from. */
+    fun copyTeams(context: Context, fromScope: String, toScope: String) {
+        val copies = teamsFor(context, fromScope).map { it.copy(id = newId(), profileId = toScope) }
+        if (copies.isEmpty()) return
+        all(context).addAll(copies)
+        save(context)
+        val prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
+        val activeIdx = teamsFor(context, fromScope).indexOfFirst { it.id == prefs.getString(KEY_ACTIVE_PREFIX + fromScope, null) }
+        setActive(context, copies[activeIdx.coerceAtLeast(0)])
+    }
+
     fun nextDefaultName(context: Context, profileId: String): String {
         val names = teamsFor(context, profileId).map { it.name }.toSet()
         var n = names.size + 1

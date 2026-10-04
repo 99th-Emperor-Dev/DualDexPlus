@@ -124,11 +124,11 @@ object SpriteManager {
                 // pixel animation: our own frames so scaling stays crisp
                 val frames = animCache.get(key) ?: decodeGif(context, path.removePrefix("sprites/"), cleanEdges = false)?.also { animCache.put(key, it) }
                 frames?.takeIf { it.bitmaps.size > 1 }?.let { fr ->
+                    val shown = if (needsPalette("gen5ani")) paletteFrames(key, fr.bitmaps) else fr.bitmaps
                     AnimationDrawable().apply {
                         isOneShot = false
-                        fr.bitmaps.forEachIndexed { i, b ->
-                            val frame = if (needsPalette("gen5ani")) paletteCopy(b) else b
-                            addFrame(BitmapDrawable(context.resources, frame).apply { setFilterBitmap(false) }, fr.durations[i])
+                        shown.forEachIndexed { i, b ->
+                            addFrame(BitmapDrawable(context.resources, b).apply { setFilterBitmap(false) }, fr.durations[i])
                         }
                     }
                 }
@@ -272,6 +272,16 @@ object SpriteManager {
         else -> true
     }
 
+    // whole animations recoloured together (same colours in every frame), cached per theme and options
+    private val paletteFramesCache = object : LruCache<String, List<Bitmap>>(12 * 1024 * 1024) {
+        override fun sizeOf(key: String, value: List<Bitmap>) = value.sumOf { it.byteCount }.coerceAtLeast(1)
+    }
+
+    private fun paletteFrames(animKey: String, frames: List<Bitmap>): List<Bitmap> {
+        val key = ThemeManager.currentTheme.id + "/" + ThemeManager.dithering + ThemeManager.fourColour + "/" + animKey
+        return paletteFramesCache.get(key) ?: ThemeManager.quantizeFrames(frames).also { paletteFramesCache.put(key, it) }
+    }
+
     private fun paletteCopy(src: Bitmap): Bitmap {
         if (!ThemeManager.isLimitedPalette) return src
         val key = ThemeManager.currentTheme.id + "/" + ThemeManager.dithering + ThemeManager.fourColour + "/" + System.identityHashCode(src)
@@ -304,11 +314,11 @@ object SpriteManager {
         val frames = animCache.get(key) ?: decodeGif(context, key, cleanEdges = folder in opaqueAnimFolders)
             ?.also { animCache.put(key, it) } ?: return null
         if (frames.bitmaps.size < 2) return null
+        val shown = if (needsPalette(folder)) paletteFrames(key, frames.bitmaps) else frames.bitmaps
         return AnimationDrawable().apply {
             isOneShot = false
-            frames.bitmaps.forEachIndexed { i, b ->
-                val frame = if (needsPalette(folder)) paletteCopy(b) else b
-                addFrame(BitmapDrawable(context.resources, frame).apply { setFilterBitmap(false) }, frames.durations[i])
+            shown.forEachIndexed { i, b ->
+                addFrame(BitmapDrawable(context.resources, b).apply { setFilterBitmap(false) }, frames.durations[i])
             }
         }
     }

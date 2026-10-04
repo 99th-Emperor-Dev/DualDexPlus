@@ -68,6 +68,7 @@ All taken on the bottom screen of a real AYN Thor.
   * Scarlet / Violet
   * Legends: Z-A
   * the latest games (National Dex)
+* **Your own games** (Settings → My games → **+ Add game**): save the current setup under a name, for example a ROM hack. It remembers the base game and version, the Dex Version, sprites, palette, 4-colour sprites, dithering and LCD, and has its own teams (starting as a copy of your current ones). Changes you make while it's selected are saved into it; hold its tile to rename or delete it.
 * **Exact version:** Gold vs Silver vs Crystal, Sword vs Shield and so on. The version changes the colours and the sprites.
 * **Each game's own PokÃ©dex order and numbers,** for example Hisui #001 Rowlet or Johto #001 Chikorita, including DLC dexes. You can limit the list to PokÃ©mon in that game, or show all 1025.
 * **Match dex to game:** the type chart, dex, forms and sprites all follow the selected game.

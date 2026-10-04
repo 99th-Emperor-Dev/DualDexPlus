@@ -426,7 +426,7 @@ object ThemeManager {
     }
 
     /** Recolours a sprite into the theme's hardware palette (no-op for full-colour themes). Half-transparent edges become hard. */
-    fun quantizeBitmap(src: Bitmap): Bitmap {
+    fun quantizeBitmap(src: Bitmap, shared: List<Int>? = null): Bitmap {
         val t = currentTheme
         if (!t.monochrome && !t.gbc15Bit) return src
         val w = src.width
@@ -434,7 +434,7 @@ object ThemeManager {
         val px = IntArray(w * h)
         src.getPixels(px, 0, w, 0, 0, w, h)
         // gbc-style: every sprite boils down to 4 colours of its own (black, white and its two main colours)
-        if (fourColour && t.gbc15Bit) return fourColourSprite(px, w, h)
+        if (fourColour && t.gbc15Bit) return fourColourSprite(px, w, h, shared)
         val memo = HashMap<Long, Int>()
         // optional ordered dithering (the checkerboard blends GBC-style rom hacks use): each pixel is nudged
         // by a 4x4 Bayer pattern before snapping, so in-between colours become a fine mix of two palette colours
@@ -468,9 +468,28 @@ object ThemeManager {
      * rest of the sprite is grouped (k-means) into its two main colours. With "Dithering" on, pixels between two
      * of those colours become a checkerboard of both. The 4 colours are then snapped to the GBC palette.
      */
-    private fun fourColourSprite(px: IntArray, w: Int, h: Int): Bitmap {
+    /**
+     * An animation's frames, recoloured together: in 4-colour mode every frame uses the same 4 colours
+     * (picked from all frames at once), so the sprite doesn't change colour from frame to frame.
+     */
+    fun quantizeFrames(frames: List<Bitmap>): List<Bitmap> {
+        val shared = if (fourColour && currentTheme.gbc15Bit) fourColourPalette(frames.flatMap { b ->
+            val px = IntArray(b.width * b.height).also { b.getPixels(it, 0, b.width, 0, 0, b.width, b.height) }
+            px.filter { Color.alpha(it) >= 128 }.map { it or 0xFF000000.toInt() }
+        }) else null
+        return frames.map { quantizeBitmap(it, shared) }
+    }
+
+    private fun fourColourSprite(px: IntArray, w: Int, h: Int, shared: List<Int>? = null): Bitmap {
         val opaque = px.filter { Color.alpha(it) >= 128 }.map { it or 0xFF000000.toInt() }
         if (opaque.isEmpty()) return Bitmap.createBitmap(px.map { 0 }.toIntArray(), w, h, Bitmap.Config.ARGB_8888)
+        val palette = shared ?: fourColourPalette(opaque)
+        return mapToPalette(px, w, h, palette)
+    }
+
+    /** The 4 colours for a sprite (or a whole animation): outline, two main colours, highlight. */
+    private fun fourColourPalette(opaque: List<Int>): List<Int> {
+        if (opaque.isEmpty()) return listOf(Color.BLACK, Color.DKGRAY, Color.LTGRAY, Color.WHITE)
         fun lum(c: Int) = Color.red(c) * 3 + Color.green(c) * 6 + Color.blue(c)
         val dark = opaque.minByOrNull { lum(it) }!!
         val light = opaque.maxByOrNull { lum(it) }!!
@@ -484,7 +503,10 @@ object ThemeManager {
         val first = byUse.firstOrNull() ?: gbc(opaque[opaque.size / 2])
         val second = byUse.firstOrNull { dist(it, first) > 6000 } ?: byUse.getOrNull(1) ?: first
         val centers = intArrayOf(first, second)
-        val palette = intArrayOf(dark, centers[0], centers[1], light).map { gbc(it) }
+        return intArrayOf(dark, centers[0], centers[1], light).map { gbc(it) }
+    }
+
+    private fun mapToPalette(px: IntArray, w: Int, h: Int, palette: List<Int>): Bitmap {
         val out = IntArray(px.size)
         for (i in px.indices) {
             val p = px[i]
