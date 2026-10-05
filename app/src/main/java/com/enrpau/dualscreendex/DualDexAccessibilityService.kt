@@ -51,14 +51,28 @@ class DualDexAccessibilityService : AccessibilityService() {
         RomManager.initialize(this)
         repository = PokemonRepository(this)
 
+        reloadPokemon()
+        // only match pokemon in the dex you're using: reload when the game, dex or profile changes in the app
+        getSharedPreferences("DualDexPrefs", MODE_PRIVATE).registerOnSharedPreferenceChangeListener(prefsListener)
+        getSharedPreferences("RomProfiles", MODE_PRIVATE).registerOnSharedPreferenceChangeListener(prefsListener)
+
+        loopHandler.post(loopRunnable)
+        android.util.Log.d("DualDex_Service", "Polling Loop Started")
+    }
+
+    private val prefsListener = android.content.SharedPreferences.OnSharedPreferenceChangeListener { _, _ ->
+        handler.removeCallbacks(reloadRunnable)
+        handler.postDelayed(reloadRunnable, 500)   // several settings change at once; reload once
+    }
+    private val reloadRunnable = Runnable { reloadPokemon() }
+
+    private fun reloadPokemon() {
         executor.submit {
+            RomManager.initialize(this)
             repository.reloadDatabase()
             pokemonList = repository.getAllPokemon()
             android.util.Log.d("DualDex_Service", "Service loaded ${pokemonList.size} Pokemon")
         }
-
-        loopHandler.post(loopRunnable)
-        android.util.Log.d("DualDex_Service", "Polling Loop Started")
     }
 
     override fun onAccessibilityEvent(event: AccessibilityEvent?) {
@@ -150,7 +164,15 @@ class DualDexAccessibilityService : AccessibilityService() {
         }
     }
 
+    // "Lv5", "Lv 12", ":L5" (gen 1-2), and the usual misreads of the v (Lu18, LV, L∨)
+    private val levelMark = Regex("""(?i)(\bl[vuy∨]\s?\.?\s?\d)|(:l\s?\d)""")
+
     private fun processOcrResult(rawText: String) {
+        // no level on screen = not a battle (menus, save screens, signs): names there are not opponents
+        if (!isJapanese() && !levelMark.containsMatchIn(rawText)) {
+            sendBroadcast(Intent("com.enrpau.dualscreendex.POKEMON_DETECTED").setPackage(packageName).putExtra("FOUND", false))
+            return
+        }
         val words = if (isJapanese()) {
             // keep kana / kanji, drop numbers and symbols, and skip UI labels like HP, Lv, No.
             rawText.replace("\n", " ")
