@@ -130,8 +130,15 @@ object ThemeManager {
     fun hideNavigationBar(window: android.view.Window) {
         // use the whole panel, including any camera-hole area at the top edge
         window.attributes = window.attributes.apply {
-            layoutInDisplayCutoutMode = android.view.WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_SHORT_EDGES
+            // ALWAYS, not SHORT_EDGES: in landscape the top is a long edge, and emulator images report a
+            // camera-hole cutout there that would otherwise keep a black strip (real handhelds have none)
+            layoutInDisplayCutoutMode = if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.R)
+                android.view.WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_ALWAYS
+                else android.view.WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_SHORT_EDGES
         }
+        // draw where the (hidden) status bar was too: screens that have one (emulators, phones) otherwise keep
+        // an empty strip at the top. The root views pad by the bars' insets, which are 0 while they're hidden.
+        androidx.core.view.WindowCompat.setDecorFitsSystemWindows(window, false)
         androidx.core.view.WindowCompat.getInsetsController(window, window.decorView).apply {
             systemBarsBehavior = androidx.core.view.WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
             hide(androidx.core.view.WindowInsetsCompat.Type.systemBars())
