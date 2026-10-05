@@ -2,7 +2,7 @@
 
 **DualDex Plus** is a companion Pokédex for dual-screen Android handhelds such as the **AYN Thor**. While you play on the top screen, it reads the Pokémon you're facing and shows its types, weaknesses, resistances, base stats, and how your team matches up against it on the bottom screen.
 
-It's a fork of [DualScreenDex](https://github.com/enrique-paulino/DualScreenDex) by Enrique Paulino. **v1.0** was the first release of the fork; the latest is **[v1.1](../../releases/latest)**. It installs as its own app (`io.github.dualdexplus`), so it can sit next to the original.
+It's a fork of [DualScreenDex](https://github.com/enrique-paulino/DualScreenDex) by Enrique Paulino. **v1.0** was the first release of the fork; the latest is **[v1.1.1](../../releases/latest)**. It installs as its own app (`io.github.dualdexplus`), so it can sit next to the original.
 
 ---
 
@@ -37,6 +37,12 @@ All taken on the bottom screen of a real AYN Thor.
 | <img src="docs/screenshots/gen1_gameboy.png" alt="Game Boy" width="280"> | <img src="docs/screenshots/gen1_pocket_mew.png" alt="Pocket" width="280"> | <img src="docs/screenshots/gen1_light.png" alt="Light" width="280"> |
 | **Game Boy Color (Yellow)** | **Super Game Boy** | |
 | <img src="docs/screenshots/gen1_gbc_yellow.png" alt="Game Boy Color" width="280"> | <img src="docs/screenshots/gen1_sgb.png" alt="Super Game Boy" width="280"> | |
+
+---
+
+## v1.1.1 (bug fixes)
+* **Scanner only reads battles.** Names are matched only when a level ("Lv5", ":L5") is on screen, so menus and save screens no longer show a Pokémon (your player name "Link" was being read as Klink).
+* **Only Pokémon in your dex.** The scanner now follows the game and Pokédex you pick in the app, so in FireRed it only matches the 386 Pokémon in FireRed's dex.
 
 ---
 
