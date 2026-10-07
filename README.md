@@ -4,6 +4,8 @@
 
 It's a fork of [DualScreenDex](https://github.com/enrique-paulino/DualScreenDex) by Enrique Paulino. **v1.0** was the first release of the fork; the latest is **[v1.1.1](../../releases/latest)**. It installs as its own app (`io.github.dualdexplus`), so it can sit next to the original.
 
+> **A personal project.** I made DualDex Plus for myself, to fit how I play on my own handheld. It isn't a product, and I don't offer support, take feature requests or promise updates. The code was written with an AI coding agent (Claude Code), not carefully hand-written, so don't treat it as an example of good code. You're welcome to try it or fork it, but use it as it is. For a properly made app, see the original [DualScreenDex](https://github.com/enrique-paulino/DualScreenDex).
+
 ---
 
 ## Demo
